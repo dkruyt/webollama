@@ -39,7 +39,7 @@ A web interface for managing Ollama models and generating text using Python Flas
 
 1. Clone this repository
 ```bash
-git clone https://github.com/username/webollama.git
+git clone https://github.com/dkruyt/webollama.git
 cd webollama
 ```
 
