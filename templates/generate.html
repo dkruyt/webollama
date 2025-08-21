@@ -85,6 +85,10 @@
                         <td>Max Tokens</td>
                         <td><span id="modal-max-tokens-value">Default</span></td>
                     </tr>
+                    <tr>
+                        <td>Context Size</td>
+                        <td><span id="modal-context-size-value">Default</span></td>
+                    </tr>
                 </table>
             </div>
             <div class="modal-footer">
@@ -143,7 +147,7 @@
                         <div class="border p-3 rounded mb-2" style="height: 200px;">
                             <div class="topk-viz d-flex flex-column justify-content-between h-100">
                                 <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width:, 90px;">All Tokens</div>
+                                    <div class="me-2 text-end" style="width: 90px;">All Tokens</div>
                                     <div class="d-flex flex-grow-1">
                                         <div class="bg-primary p-1 me-1" style="width: 20%; height: 20px;"></div>
                                         <div class="bg-info p-1 me-1" style="width: 15%; height: 20px;"></div>
@@ -367,6 +371,18 @@
                                         </label>
                                         <input type="number" class="form-control" id="max-tokens" placeholder="Default: model's max context" min="1">
                                     </div>
+                                    
+                                    <!-- Context Size with info tooltip -->
+                                    <div class="mb-3">
+                                        <label for="context-size" class="form-label d-flex align-items-center">
+                                            <div>
+                                                Context Size
+                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Maximum number of tokens in the context window. Higher values allow for longer conversations but use more memory."></i>
+                                            </div>
+                                        </label>
+                                        <input type="number" class="form-control" id="context-size" placeholder="Default: model defined" min="512" max="131072">
+                                        <div class="form-text">Common values: 2048, 4096, 8192, 16384, 32768</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -435,12 +451,14 @@
         const topKSlider = document.getElementById('top-k');
         const topKValue = document.getElementById('top-k-value');
         const maxTokens = document.getElementById('max-tokens');
+        const contextSize = document.getElementById('context-size');
         
         // Modal parameter values
         const modalTemperatureValue = document.getElementById('modal-temperature-value');
         const modalTopPValue = document.getElementById('modal-top-p-value');
         const modalTopKValue = document.getElementById('modal-top-k-value');
         const modalMaxTokensValue = document.getElementById('modal-max-tokens-value');
+        const modalContextSizeValue = document.getElementById('modal-context-size-value');
         
         // Initialize tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -510,7 +528,8 @@
                 temperature: 1.0,
                 top_p: 0.95,
                 top_k: 60,
-                max_tokens: ''
+                max_tokens: '',
+                context_size: '4096'
             },
             'balanced': {
                 name: 'Balanced',
@@ -518,7 +537,8 @@
                 temperature: 0.7,
                 top_p: 0.9,
                 top_k: 40,
-                max_tokens: ''
+                max_tokens: '',
+                context_size: '2048'
             },
             'precise': {
                 name: 'Precise/Factual',
@@ -526,7 +546,8 @@
                 temperature: 0.2,
                 top_p: 0.6,
                 top_k: 20,
-                max_tokens: ''
+                max_tokens: '',
+                context_size: '2048'
             },
             'coding': {
                 name: 'Code Generation',
@@ -534,7 +555,8 @@
                 temperature: 0.3,
                 top_p: 0.8,
                 top_k: 35,
-                max_tokens: ''
+                max_tokens: '',
+                context_size: '8192'
             }
         };
         
@@ -565,6 +587,11 @@
         });
         
         maxTokens.addEventListener('input', function() {
+            presetSelect.value = ''; // Reset to custom when user changes params
+            updateDeleteButtonVisibility();
+        });
+        
+        contextSize.addEventListener('input', function() {
             presetSelect.value = ''; // Reset to custom when user changes params
             updateDeleteButtonVisibility();
         });
@@ -667,7 +694,8 @@
                     temperature: parseFloat(temperatureSlider.value),
                     top_p: parseFloat(topPSlider.value),
                     top_k: parseInt(topKSlider.value),
-                    max_tokens: maxTokens.value
+                    max_tokens: maxTokens.value,
+                    context_size: contextSize.value
                 };
                 
                 // Get existing presets
@@ -766,6 +794,7 @@
             topKValue.textContent = preset.top_k;
             
             maxTokens.value = preset.max_tokens || '';
+            contextSize.value = preset.context_size || '';
         }
         
         function updateModalValues() {
@@ -774,6 +803,7 @@
             modalTopPValue.textContent = topPSlider.value;
             modalTopKValue.textContent = topKSlider.value;
             modalMaxTokensValue.textContent = maxTokens.value || 'Default';
+            modalContextSizeValue.textContent = contextSize.value || 'Default';
             
             // Clear input fields
             presetNameInput.value = '';
@@ -797,6 +827,10 @@
             
             if (maxTokens.value) {
                 options.num_predict = parseInt(maxTokens.value);
+            }
+            
+            if (contextSize.value) {
+                options.num_ctx = parseInt(contextSize.value);
             }
             
             // Show loading indicator
