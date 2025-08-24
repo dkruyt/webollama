@@ -446,7 +446,7 @@ def api_generate():
                     processed_options[key] = int(value) if value != '' and value is not None else None
                 except (ValueError, TypeError):
                     continue
-            elif key in ['temperature', 'top_p', 'repeat_penalty', 'typical_p']:
+            elif key in ['temperature', 'top_p', 'repeat_penalty', 'typical_p', 'min_p']:
                 # Convert to float
                 try:
                     processed_options[key] = float(value) if value != '' and value is not None else None
