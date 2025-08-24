@@ -376,6 +376,22 @@
                                             <span>Diverse</span>
                                         </div>
                                     </div>
+
+                                    <!-- TFS Z with info tooltip -->
+                                    <div class="mb-3">
+                                        <label for="tfs-z" class="form-label d-flex justify-content-between align-items-center">
+                                            <div>
+                                                TFS Z: <span id="tfs-z-value" class="badge bg-primary">1</span>
+                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Tail Free Sampling. Higher values reduce the impact of less likely tokens."></i>
+                                            </div>
+                                        </label>
+                                        <input type="range" class="form-range" min="0.1" max="2" step="0.1" value="1" id="tfs-z">
+                                        <div class="d-flex justify-content-between text-muted small">
+                                            <span>Conservative</span>
+                                            <span>Balanced</span>
+                                            <span>Aggressive</span>
+                                        </div>
+                                    </div>
                                     
                                     <!-- Max Tokens with info tooltip -->
                                     <div class="mb-3">
@@ -468,6 +484,8 @@
         const topKValue = document.getElementById('top-k-value');
         const minPSlider = document.getElementById('min-p');
         const minPValue = document.getElementById('min-p-value');
+        const tfsZSlider = document.getElementById('tfs-z');
+        const tfsZValue = document.getElementById('tfs-z-value');
         const maxTokens = document.getElementById('max-tokens');
         const contextSize = document.getElementById('context-size');
         
@@ -476,6 +494,7 @@
         const modalTopPValue = document.getElementById('modal-top-p-value');
         const modalTopKValue = document.getElementById('modal-top-k-value');
         const modalMinPValue = document.getElementById('modal-min-p-value');
+        const modalTfsZValue = document.getElementById('modal-tfs-z-value');
         const modalMaxTokensValue = document.getElementById('modal-max-tokens-value');
         const modalContextSizeValue = document.getElementById('modal-context-size-value');
         
@@ -548,6 +567,7 @@
                 top_p: 0.95,
                 top_k: 60,
                 min_p: 0.1,
+                tfs_z: 1.0,
                 max_tokens: '',
                 context_size: '4096'
             },
@@ -558,6 +578,7 @@
                 top_p: 0.9,
                 top_k: 40,
                 min_p: 0.1,
+                tfs_z: 1.0,
                 max_tokens: '',
                 context_size: '2048'
             },
@@ -568,6 +589,7 @@
                 top_p: 0.6,
                 top_k: 20,
                 min_p: 0.05,
+                tfs_z: 1.0,
                 max_tokens: '',
                 context_size: '2048'
             },
@@ -578,6 +600,7 @@
                 top_p: 0.8,
                 top_k: 35,
                 min_p: 0.05,
+                tfs_z: 1.0,
                 max_tokens: '',
                 context_size: '8192'
             }
@@ -611,6 +634,12 @@
         
         minPSlider.addEventListener('input', function() {
             minPValue.textContent = this.value;
+            presetSelect.value = ''; // Reset to custom when user changes params
+            updateDeleteButtonVisibility();
+        });
+        
+        tfsZSlider.addEventListener('input', function() {
+            tfsZValue.textContent = this.value;
             presetSelect.value = ''; // Reset to custom when user changes params
             updateDeleteButtonVisibility();
         });
@@ -724,6 +753,7 @@
                     top_p: parseFloat(topPSlider.value),
                     top_k: parseInt(topKSlider.value),
                     min_p: parseFloat(minPSlider.value),
+                    tfs_z: parseFloat(tfsZSlider.value),
                     max_tokens: maxTokens.value,
                     context_size: contextSize.value
                 };
@@ -826,6 +856,9 @@
             minPSlider.value = preset.min_p;
             minPValue.textContent = preset.min_p;
             
+            tfsZSlider.value = preset.tfs_z;
+            tfsZValue.textContent = preset.tfs_z;
+            
             maxTokens.value = preset.max_tokens || '';
             contextSize.value = preset.context_size || '';
         }
@@ -836,6 +869,7 @@
             modalTopPValue.textContent = topPSlider.value;
             modalTopKValue.textContent = topKSlider.value;
             modalMinPValue.textContent = minPSlider.value;
+            modalTfsZValue.textContent = tfsZSlider.value;
             modalMaxTokensValue.textContent = maxTokens.value || 'Default';
             modalContextSizeValue.textContent = contextSize.value || 'Default';
             
@@ -859,6 +893,7 @@
             options.top_p = parseFloat(topPSlider.value);
             options.top_k = parseInt(topKSlider.value);
             options.min_p = parseFloat(minPSlider.value);
+            options.tfs_z = parseFloat(tfsZSlider.value);
             
             if (maxTokens.value) {
                 options.num_predict = parseInt(maxTokens.value);
