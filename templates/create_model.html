@@ -51,88 +51,108 @@
                 if (streamEnabled) {
                     e.preventDefault();
                     
+                    // Extract form data BEFORE disabling elements
+                    const formData = new FormData(createForm);
+                    
+                    // Convert FormData to a regular object for JSON sending
+                    const formObject = {};
+                    for (let [key, value] of formData.entries()) {
+                        formObject[key] = value;
+                    }
+                    
+                    // Get CSRF token from the form
+                    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+                    formObject['csrf_token'] = csrfToken;
+                    
                     // Show progress section
                     progressSection.style.display = 'block';
                     progressLog.innerHTML = '<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Starting model creation...<br>';
                     
-                    // Disable form elements
+                    // Disable form elements AFTER extracting data
                     const formElements = createForm.elements;
                     for (let i = 0; i < formElements.length; i++) {
                         formElements[i].disabled = true;
                     }
                     
-                    // Prepare form data
-                    const formData = new FormData(createForm);
-                    
-                    // Create a unique stream ID for this model creation
-                    const streamId = Date.now().toString();
-                    formData.append('stream_id', streamId);
-                    
-                    // First, send form data via POST
+                    // Make streaming request directly to the create-model endpoint
                     fetch(createForm.action, {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify(formObject)
                     })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Server returned ${response.status}: ${response.statusText}`);
                         }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.error) {
-                            throw new Error(data.error);
-                        }
                         
-                        // Setup server-sent events connection
-                        const eventSource = new EventSource(`/model-stream/${streamId}`);
+                        const reader = response.body.getReader();
+                        const decoder = new TextDecoder();
                         
-                        // Handle incoming messages
-                        eventSource.onmessage = function(event) {
-                            try {
-                                const data = JSON.parse(event.data);
-                                
-                                if (data.error) {
-                                    // Handle error
-                                    progressLog.innerHTML += `<div class="text-danger">${data.error}</div>`;
-                                    eventSource.close();
-                                    
-                                    // Re-enable form after delay
-                                    setTimeout(() => {
-                                        for (let i = 0; i < formElements.length; i++) {
-                                            formElements[i].disabled = false;
-                                        }
-                                    }, 1000);
-                                } else if (data.done) {
-                                    // Handle completion
-                                    progressLog.innerHTML += `<div class="text-success mt-2">${data.message}</div>`;
-                                    eventSource.close();
+                        function readStream() {
+                            reader.read().then(({ done, value }) => {
+                                if (done) {
+                                    // Stream finished
+                                    progressLog.innerHTML += '<div class="text-success mt-2">Model created successfully!</div>';
                                     
                                     // Redirect to models page after delay
                                     setTimeout(() => {
                                         window.location.href = '/models';
                                     }, 2000);
-                                } else if (data.status) {
-                                    // Handle status update
-                                    progressLog.innerHTML += `<div>${data.status}</div>`;
+                                    return;
                                 }
-                            } catch (error) {
-                                console.error('Error parsing event data:', error);
-                            }
-                        };
+                                
+                                // Process the chunk
+                                const chunk = decoder.decode(value, { stream: true });
+                                const lines = chunk.split('\n');
+                                
+                                for (const line of lines) {
+                                    if (line.startsWith('data: ')) {
+                                        try {
+                                            const jsonData = line.substring(6);
+                                            if (jsonData.trim()) {
+                                                const data = JSON.parse(jsonData);
+                                                
+                                                if (data.error) {
+                                                    progressLog.innerHTML += `<div class="text-danger">Error: ${data.error}</div>`;
+                                                    // Re-enable form
+                                                    setTimeout(() => {
+                                                        for (let i = 0; i < formElements.length; i++) {
+                                                            formElements[i].disabled = false;
+                                                        }
+                                                    }, 1000);
+                                                    return;
+                                                } else if (data.done) {
+                                                    progressLog.innerHTML += `<div class="text-success mt-2">${data.message || 'Model created successfully!'}</div>`;
+                                                    // Redirect to models page after delay
+                                                    setTimeout(() => {
+                                                        window.location.href = '/models';
+                                                    }, 2000);
+                                                    return;
+                                                } else if (data.status) {
+                                                    progressLog.innerHTML += `<div>${data.status}</div>`;
+                                                } else {
+                                                    // Handle Ollama API response format
+                                                    if (data.status || data.message) {
+                                                        progressLog.innerHTML += `<div>${data.status || data.message}</div>`;
+                                                    }
+                                                }
+                                            }
+                                        } catch (error) {
+                                            // Skip malformed JSON
+                                            console.warn('Could not parse JSON:', jsonData);
+                                        }
+                                    }
+                                }
+                                
+                                // Continue reading
+                                readStream();
+                            });
+                        }
                         
-                        // Handle errors
-                        eventSource.onerror = function() {
-                            progressLog.innerHTML += '<div class="text-danger">Error: Connection lost</div>';
-                            eventSource.close();
-                            
-                            // Re-enable form after delay
-                            setTimeout(() => {
-                                for (let i = 0; i < formElements.length; i++) {
-                                    formElements[i].disabled = false;
-                                }
-                            }, 1000);
-                        };
+                        readStream();
                     })
                     .catch(error => {
                         // Handle fetch or processing errors
@@ -184,10 +204,14 @@
                         <div id="from_model_section">
                             <div class="mb-3">
                                 <label for="from_model" class="form-label">Base Model <span class="text-danger">*</span></label>
-                                <select class="form-select" id="from_model" name="from_model">
-                                    {% for model in models %}
-                                    <option value="{{ model.name }}">{{ model.name }}</option>
-                                    {% endfor %}
+                                <select class="form-select" id="from_model" name="from_model" required>
+                                    {% if models %}
+                                        {% for model in models %}
+                                        <option value="{{ model.name }}">{{ model.name }}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option value="">No models available</option>
+                                    {% endif %}
                                 </select>
                                 <div class="form-text">The existing model to use as a base</div>
                             </div>
