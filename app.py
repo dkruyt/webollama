@@ -462,8 +462,34 @@ def api_generate():
     if system:
         payload["system"] = system
     
+    # Convert string values to appropriate types for Ollama API
     if options:
-        payload["options"] = options
+        processed_options = {}
+        for key, value in options.items():
+            if key in ['num_ctx', 'num_predict', 'num_keep', 'seed', 'top_k']:
+                # Convert to integer
+                try:
+                    processed_options[key] = int(value) if value != '' and value is not None else None
+                except (ValueError, TypeError):
+                    continue
+            elif key in ['temperature', 'top_p', 'repeat_penalty', 'typical_p']:
+                # Convert to float
+                try:
+                    processed_options[key] = float(value) if value != '' and value is not None else None
+                except (ValueError, TypeError):
+                    continue
+            elif key in ['repeat_last_n']:
+                # Convert to integer, handle -1 for no limit
+                try:
+                    processed_options[key] = int(value) if value != '' and value is not None else None
+                except (ValueError, TypeError):
+                    continue
+            elif value != '' and value is not None:  # For other string options
+                processed_options[key] = value
+        
+        # Only add options if we have valid ones
+        if processed_options:
+            payload["options"] = processed_options
     
     try:
         response = requests.post(f"{OLLAMA_API_URL}/generate", json=payload)
