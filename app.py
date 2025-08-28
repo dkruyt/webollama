@@ -168,11 +168,34 @@ def create_model():
         return redirect(url_for('create_model_page'))
     
     # Handle POST requests
-    model_name = request.form.get('model_name')
-    creation_method = request.form.get('creation_method')
-    system_prompt = request.form.get('system_prompt')
-    template = request.form.get('template')
-    stream = 'stream' in request.form
+    # Handle both form data and JSON data
+    if request.content_type and 'application/json' in request.content_type:
+        # JSON request (from streaming)
+        data = request.get_json()
+        model_name = data.get('model_name') if data else None
+        creation_method = data.get('creation_method') if data else None
+        system_prompt = data.get('system_prompt') if data else None
+        template = data.get('template') if data else None
+        stream = data.get('stream') == 'on' if data else False
+        from_model = data.get('from_model') if data else None
+        quantize = data.get('quantize') if data else None
+    else:
+        # Form data request (non-streaming)
+        model_name = request.form.get('model_name')
+        creation_method = request.form.get('creation_method')
+        system_prompt = request.form.get('system_prompt')
+        template = request.form.get('template')
+        stream = 'stream' in request.form
+        from_model = request.form.get('from_model')
+        quantize = request.form.get('quantize')
+    
+    if not model_name:
+        flash("Model name is required", "danger")
+        return redirect(url_for('create_model_page'))
+    
+    if not creation_method:
+        flash("Creation method is required", "danger")
+        return redirect(url_for('create_model_page'))
     
     # Prepare the payload
     payload = {
@@ -189,12 +212,13 @@ def create_model():
     
     # Handle creation method
     if creation_method == 'from_model':
-        from_model = request.form.get('from_model')
-        if from_model:
-            payload["from"] = from_model
+        if not from_model:
+            flash("Base model is required when creating from an existing model", "danger")
+            return redirect(url_for('create_model_page'))
+        
+        payload["from"] = from_model
         
         # Add quantize if specified
-        quantize = request.form.get('quantize')
         if quantize:
             payload["quantize"] = quantize
     
@@ -232,6 +256,8 @@ def stream_create_model(payload):
         
         if response.status_code != 200:
             error_msg = f"Error from Ollama API: {response.status_code}"
+            if hasattr(response, 'text'):
+                error_msg += f" - {response.text}"
             yield f"data: {json.dumps({'error': error_msg})}\n\n"
             return
         
