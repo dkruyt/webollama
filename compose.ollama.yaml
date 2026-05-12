@@ -7,7 +7,7 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     ports:
-      - "11434:11434"
+      - 11434:11434
     restart: unless-stopped
     networks:
       - ollama-network
@@ -19,9 +19,11 @@ services:
     image: ghcr.io/dkruyt/webollama:latest
     container_name: webollama
     ports:
-      - "5000:5000"
+      - ${PORT}:5000
     environment:
-      - OLLAMA_API_BASE=http://ollama:11434
+      HOST: ${HOST:-0.0.0.0}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+      OLLAMA_API_BASE: http://ollama:11434
     restart: unless-stopped
     depends_on:
       - ollama

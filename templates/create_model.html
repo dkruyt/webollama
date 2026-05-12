@@ -37,12 +37,6 @@
         // Update visibility when selection changes
         creationMethod.addEventListener('change', updateVisibility);
         
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-        
         // Handle form submission with streaming
         if (createForm) {
             createForm.addEventListener('submit', function(e) {
@@ -66,7 +60,7 @@
                     
                     // Show progress section
                     progressSection.style.display = 'block';
-                    progressLog.innerHTML = '<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Starting model creation...<br>';
+                    progressLog.innerHTML = '<span class="animate-spin inline-block h-4 w-4 border-2 border-neutral-200 border-t-neutral-900 dark:border-t-white rounded-full mr-2"></span> Starting model creation...<br>';
                     
                     // Disable form elements AFTER extracting data
                     const formElements = createForm.elements;
@@ -95,7 +89,7 @@
                             reader.read().then(({ done, value }) => {
                                 if (done) {
                                     // Stream finished
-                                    progressLog.innerHTML += '<div class="text-success mt-2">Model created successfully!</div>';
+                                    progressLog.innerHTML += '<div class="text-green-600 mt-2">Model created successfully!</div>';
                                     
                                     // Redirect to models page after delay
                                     setTimeout(() => {
@@ -116,7 +110,7 @@
                                                 const data = JSON.parse(jsonData);
                                                 
                                                 if (data.error) {
-                                                    progressLog.innerHTML += `<div class="text-danger">Error: ${data.error}</div>`;
+                                                    progressLog.innerHTML += `<div class="text-red-600">Error: ${data.error}</div>`;
                                                     // Re-enable form
                                                     setTimeout(() => {
                                                         for (let i = 0; i < formElements.length; i++) {
@@ -125,7 +119,7 @@
                                                     }, 1000);
                                                     return;
                                                 } else if (data.done) {
-                                                    progressLog.innerHTML += `<div class="text-success mt-2">${data.message || 'Model created successfully!'}</div>`;
+                                                    progressLog.innerHTML += `<div class="text-green-600 mt-2">${data.message || 'Model created successfully!'}</div>`;
                                                     // Redirect to models page after delay
                                                     setTimeout(() => {
                                                         window.location.href = '/models';
@@ -156,7 +150,7 @@
                     })
                     .catch(error => {
                         // Handle fetch or processing errors
-                        progressLog.innerHTML += `<div class="text-danger">Error: ${error.message}</div>`;
+                        progressLog.innerHTML += `<div class="text-red-600">Error: ${error.message}</div>`;
                         
                         // Re-enable form after delay
                         setTimeout(() => {
@@ -173,28 +167,28 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="mb-4">
-        <h1>Create Model</h1>
-        <p class="text-muted">Create a new model from an existing model or from files</p>
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">Create Model</h1>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">Create a new model from an existing model or from files</p>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2">
+            <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+                <div class="p-6">
                     <form id="create-model-form" method="POST" action="/create-model">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         
-                        <div class="mb-3">
-                            <label for="model_name" class="form-label">Model Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="model_name" name="model_name" required>
-                            <div class="form-text">Name for the new model (e.g. "my-custom-llama")</div>
+                        <div class="mb-4">
+                            <label for="model_name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Model Name <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="model_name" name="model_name" required>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Name for the new model (e.g. "my-custom-llama")</p>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="creation_method" class="form-label">Creation Method <span class="text-danger">*</span></label>
-                            <select class="form-select" id="creation_method" name="creation_method" required>
+                        <div class="mb-4">
+                            <label for="creation_method" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Creation Method <span class="text-red-500">*</span></label>
+                            <select class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="creation_method" name="creation_method" required>
                                 <option value="from_model">From existing model</option>
                                 <option value="from_files">From GGUF file or Safetensors</option>
                             </select>
@@ -202,9 +196,9 @@
                         
                         <!-- From Model Section -->
                         <div id="from_model_section">
-                            <div class="mb-3">
-                                <label for="from_model" class="form-label">Base Model <span class="text-danger">*</span></label>
-                                <select class="form-select" id="from_model" name="from_model" required>
+                            <div class="mb-4">
+                                <label for="from_model" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Base Model <span class="text-red-500">*</span></label>
+                                <select class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="from_model" name="from_model" required>
                                     {% if models %}
                                         {% for model in models %}
                                         <option value="{{ model.name }}">{{ model.name }}</option>
@@ -213,18 +207,19 @@
                                         <option value="">No models available</option>
                                     {% endif %}
                                 </select>
-                                <div class="form-text">The existing model to use as a base</div>
+                                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">The existing model to use as a base</p>
                             </div>
                         </div>
                         
                         <!-- Files Section -->
                         <div id="files_section" style="display: none;">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i> The file upload feature for creating models from GGUF or Safetensors is coming soon. Please use the Ollama CLI for now.
+                            <div class="flex items-start gap-2 px-4 py-3 rounded-md border text-sm bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 mb-4">
+                                <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
+                                <span>The file upload feature for creating models from GGUF or Safetensors is coming soon. Please use the Ollama CLI for now.</span>
                             </div>
-                            <div class="mb-3">
-                                <label for="file_type" class="form-label">File Type</label>
-                                <select class="form-select" id="file_type" name="file_type">
+                            <div class="mb-4">
+                                <label for="file_type" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">File Type</label>
+                                <select class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="file_type" name="file_type">
                                     <option value="gguf">GGUF File</option>
                                     <option value="safetensors">Safetensors</option>
                                 </select>
@@ -232,13 +227,13 @@
                         </div>
                         
                         <!-- Common parameters -->
-                        <hr>
-                        <h5 class="card-title mb-3">Model Parameters</h5>
+                        <hr class="border-neutral-200 dark:border-neutral-800 my-4">
+                        <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Model Parameters</h5>
                         
                         <!-- Quantize Section -->
-                        <div id="quantize_section" class="mb-3">
-                            <label for="quantize" class="form-label">Quantization</label>
-                            <select class="form-select" id="quantize" name="quantize">
+                        <div id="quantize_section" class="mb-4">
+                            <label for="quantize" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Quantization</label>
+                            <select class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="quantize" name="quantize">
                                 <option value="">No quantization</option>
                                 <option value="q4_K_M">q4_K_M (Recommended)</option>
                                 <option value="q8_0">q8_0 (Recommended)</option>
@@ -255,43 +250,41 @@
                                 <option value="q5_K_S">q5_K_S</option>
                                 <option value="q6_K">q6_K</option>
                             </select>
-                            <div class="form-text">Quantize a non-quantized model (e.g. float16)</div>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Quantize a non-quantized model (e.g. float16)</p>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="system_prompt" class="form-label">System Prompt</label>
-                            <textarea class="form-control" id="system_prompt" name="system_prompt" rows="3"></textarea>
-                            <div class="form-text">Custom system prompt for the model</div>
+                        <div class="mb-4">
+                            <label for="system_prompt" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">System Prompt</label>
+                            <textarea class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="system_prompt" name="system_prompt" rows="3"></textarea>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Custom system prompt for the model</p>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="template" class="form-label">Template</label>
-                            <textarea class="form-control" id="template" name="template" rows="3"></textarea>
-                            <div class="form-text">Custom prompt template for the model</div>
+                        <div class="mb-4">
+                            <label for="template" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Template</label>
+                            <textarea class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white" id="template" name="template" rows="3"></textarea>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Custom prompt template for the model</p>
                         </div>
                         
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="stream" name="stream" checked>
-                                <label class="form-check-label" for="stream">
-                                    Stream response
-                                </label>
-                            </div>
-                            <div class="form-text">If checked, responses will be streamed as they're processed</div>
+                        <div class="mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="stream" name="stream" checked class="rounded border-neutral-300 dark:border-neutral-600">
+                                <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Stream response</span>
+                            </label>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">If checked, responses will be streamed as they're processed</p>
                         </div>
                         
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus-circle me-2"></i> Create Model
+                        <div class="flex justify-end">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                                <i class="fas fa-plus-circle mr-2"></i> Create Model
                             </button>
                         </div>
                     </form>
                     
                     <!-- Progress section (hidden by default) -->
                     <div id="progress-section" class="mt-4" style="display: none;">
-                        <h5>Model Creation Progress</h5>
-                        <div class="border rounded p-3 bg-light">
-                            <div id="progress-log" class="small" style="max-height: 300px; overflow-y: auto; font-family: monospace;">
+                        <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-2">Model Creation Progress</h5>
+                        <div class="rounded border border-neutral-200 dark:border-neutral-700 p-3 bg-neutral-50 dark:bg-neutral-900">
+                            <div id="progress-log" class="text-xs font-mono" style="max-height: 300px; overflow-y: auto;">
                             </div>
                         </div>
                     </div>
@@ -299,21 +292,21 @@
             </div>
         </div>
         
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="fas fa-info-circle me-2"></i> About Model Creation
+        <div class="md:col-span-1">
+            <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm">
+                <div class="p-6">
+                    <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">
+                        <i class="fas fa-info-circle mr-2"></i>About Model Creation
                     </h5>
-                    <p class="card-text">
+                    <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
                         Create a new model by either:
                     </p>
-                    <ul>
-                        <li>Modifying an existing model with a custom system prompt</li>
-                        <li>Quantizing an existing model to reduce memory usage</li>
-                        <li>Importing from a GGUF file or Safetensors directory</li>
+                    <ul class="space-y-1 mb-3">
+                        <li class="text-sm text-neutral-600 dark:text-neutral-400"><i class="fas fa-check text-green-500 mr-2"></i>Modifying an existing model with a custom system prompt</li>
+                        <li class="text-sm text-neutral-600 dark:text-neutral-400"><i class="fas fa-check text-green-500 mr-2"></i>Quantizing an existing model to reduce memory usage</li>
+                        <li class="text-sm text-neutral-600 dark:text-neutral-400"><i class="fas fa-check text-green-500 mr-2"></i>Importing from a GGUF file or Safetensors directory</li>
                     </ul>
-                    <p class="card-text">
+                    <p class="text-sm text-neutral-600 dark:text-neutral-400">
                         <strong>Note:</strong> Creating models from GGUF or Safetensors files requires first uploading the files to the server using the Ollama API.
                     </p>
                 </div>

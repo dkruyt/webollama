@@ -4,418 +4,421 @@
 
 {% block extra_css %}
 <style>
+    #savePresetModal, #paramVisualizationModal { border: none; padding: 0; color: inherit; }
+    #savePresetModal { width: 100%; max-width: 500px; }
+    #paramVisualizationModal { width: 100%; max-width: 800px; }
     .result-container {
         min-height: 200px;
         max-height: 500px;
         overflow-y: auto;
         white-space: pre-wrap;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        padding: 15px;
-        margin-top: 20px;
-    }
-    .advanced-options {
-        border-top: 1px solid #dee2e6;
-        padding-top: 15px;
-        margin-top: 15px;
-    }
-    .stats-container {
-        font-size: 0.85rem;
-        margin-top: 15px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        padding: 10px;
-    }
-    .loader {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        border-top-color: #007bff;
-        animation: spin 1s ease-in-out infinite;
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
     }
 </style>
 {% endblock %}
 
-{% block content %}
+{% block modals %}
 <!-- Save Preset Modal -->
-<div class="modal fade" id="savePresetModal" tabindex="-1" aria-labelledby="savePresetModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog">
-        <div class="modal-content" style="z-index: 1050;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="savePresetModalLabel"><i class="fas fa-save me-2"></i>Save Parameter Preset</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<dialog id="savePresetModal">
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 shadow-xl">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h5 class="text-base font-semibold text-neutral-900 dark:text-white" id="savePresetModalLabel">
+                <i class="fas fa-save mr-2"></i>Save Parameter Preset
+            </h5>
+            <button type="button" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200" onclick="this.closest('dialog').close()" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div class="mb-4">
+                <label for="preset-name" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Preset Name</label>
+                <input type="text" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="preset-name" placeholder="My Custom Preset">
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="preset-name" class="form-label">Preset Name</label>
-                    <input type="text" class="form-control" id="preset-name" placeholder="My Custom Preset">
-                </div>
-                <div class="mb-3">
-                    <label for="preset-description" class="form-label">Description (Optional)</label>
-                    <textarea class="form-control" id="preset-description" rows="2" placeholder="What is this preset good for?"></textarea>
-                </div>
-                
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <small>This preset will be saved in your browser's local storage.</small>
-                </div>
-                
-                <h6 class="mt-3">Current Parameters</h6>
-                <table class="table table-sm">
-                    <tr>
-                        <td>Temperature</td>
-                        <td><span id="modal-temperature-value">0.7</span></td>
-                    </tr>
-                    <tr>
-                        <td>Top P</td>
-                        <td><span id="modal-top-p-value">0.9</span></td>
-                    </tr>
-                    <tr>
-                        <td>Top K</td>
-                        <td><span id="modal-top-k-value">40</span></td>
-                    </tr>
-                    <tr>
-                        <td>Max Tokens</td>
-                        <td><span id="modal-max-tokens-value">Default</span></td>
-                    </tr>
-                    <tr>
-                        <td>Context Size</td>
-                        <td><span id="modal-context-size-value">Default</span></td>
-                    </tr>
-                </table>
+            <div class="mb-4">
+                <label for="preset-description" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Description (Optional)</label>
+                <textarea class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="preset-description" rows="2" placeholder="What is this preset good for?"></textarea>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-preset-btn">Save Preset</button>
+
+            <div class="flex items-start gap-2 px-4 py-3 rounded-md border text-sm bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 mb-4">
+                <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
+                <span>This preset will be saved in your browser's local storage.</span>
             </div>
+
+            <h6 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Current Parameters</h6>
+            <table class="w-full text-sm">
+                <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                    <tr>
+                        <td class="py-1.5 text-neutral-600 dark:text-neutral-400">Temperature</td>
+                        <td class="py-1.5 text-neutral-900 dark:text-neutral-100"><span id="modal-temperature-value">0.7</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 text-neutral-600 dark:text-neutral-400">Top P</td>
+                        <td class="py-1.5 text-neutral-900 dark:text-neutral-100"><span id="modal-top-p-value">0.9</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 text-neutral-600 dark:text-neutral-400">Top K</td>
+                        <td class="py-1.5 text-neutral-900 dark:text-neutral-100"><span id="modal-top-k-value">40</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 text-neutral-600 dark:text-neutral-400">Max Tokens</td>
+                        <td class="py-1.5 text-neutral-900 dark:text-neutral-100"><span id="modal-max-tokens-value">Default</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 text-neutral-600 dark:text-neutral-400">Context Size</td>
+                        <td class="py-1.5 text-neutral-900 dark:text-neutral-100"><span id="modal-context-size-value">Default</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-end gap-2 px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
+            <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors" onclick="this.closest('dialog').close()">Cancel</button>
+            <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors" id="save-preset-btn">Save Preset</button>
         </div>
     </div>
-</div>
+</dialog>
 
 <!-- Parameter Visualization Modal -->
-<div class="modal fade" id="paramVisualizationModal" tabindex="-1" aria-labelledby="paramVisualizationModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="z-index: 1050;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="paramVisualizationModalLabel"><i class="fas fa-chart-bar me-2"></i>Parameter Effects Visualization</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<dialog id="paramVisualizationModal">
+    <div class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 shadow-xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+                <h5 class="text-base font-semibold text-neutral-900 dark:text-white" id="paramVisualizationModalLabel">
+                    <i class="fas fa-chart-bar mr-2"></i>Parameter Effects Visualization
+                </h5>
+                <button type="button" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200" onclick="this.closest('dialog').close()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <h6>Temperature Effect</h6>
-                        <div class="border p-3 rounded mb-2" style="height: 200px;">
-                            <div class="temperature-viz d-flex flex-column justify-content-between h-100">
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">Temperature 0.2</div>
-                                    <div class="progress flex-grow-1" style="height: 20px;">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h6 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Temperature Effect</h6>
+                        <div class="border border-neutral-200 dark:border-neutral-700 p-3 rounded-md mb-2" style="height: 200px;">
+                            <div class="flex flex-col justify-between h-full">
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">Temperature 0.2</div>
+                                    <div class="flex flex-1 h-5 rounded overflow-hidden">
+                                        <div class="bg-blue-600" style="width: 90%;"></div>
+                                        <div class="bg-cyan-400" style="width: 10%;"></div>
                                     </div>
                                 </div>
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">Temperature 0.7</div>
-                                    <div class="progress flex-grow-1" style="height: 20px;">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">Temperature 0.7</div>
+                                    <div class="flex flex-1 h-5 rounded overflow-hidden">
+                                        <div class="bg-blue-600" style="width: 60%;"></div>
+                                        <div class="bg-cyan-400" style="width: 25%;"></div>
+                                        <div class="bg-neutral-400" style="width: 15%;"></div>
                                     </div>
                                 </div>
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">Temperature 1.5</div>
-                                    <div class="progress flex-grow-1" style="height: 20px;">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">Temperature 1.5</div>
+                                    <div class="flex flex-1 h-5 rounded overflow-hidden">
+                                        <div class="bg-blue-600" style="width: 30%;"></div>
+                                        <div class="bg-cyan-400" style="width: 25%;"></div>
+                                        <div class="bg-neutral-400" style="width: 15%;"></div>
+                                        <div class="bg-yellow-400" style="width: 30%;"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <small class="text-muted">Lower temperature focuses on most likely tokens. Higher temperature distributes probability more evenly.</small>
+                        <p class="text-xs text-neutral-500 dark:text-neutral-400">Lower temperature focuses on most likely tokens. Higher temperature distributes probability more evenly.</p>
                     </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <h6>Top P & Top K Effect</h6>
-                        <div class="border p-3 rounded mb-2" style="height: 200px;">
-                            <div class="topk-viz d-flex flex-column justify-content-between h-100">
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">All Tokens</div>
-                                    <div class="d-flex flex-grow-1">
-                                        <div class="bg-primary p-1 me-1" style="width: 20%; height: 20px;"></div>
-                                        <div class="bg-info p-1 me-1" style="width: 15%; height: 20px;"></div>
-                                        <div class="bg-secondary p-1 me-1" style="width: 12%; height: 20px;"></div>
-                                        <div class="bg-warning p-1 me-1" style="width: 8%; height: 20px;"></div>
-                                        <div class="bg-danger p-1 me-1" style="width: 5%; height: 20px;"></div>
-                                        <div class="bg-success p-1 me-1" style="width: 40%; height: 20px;"></div>
+
+                    <div>
+                        <h6 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Top P &amp; Top K Effect</h6>
+                        <div class="border border-neutral-200 dark:border-neutral-700 p-3 rounded-md mb-2" style="height: 200px;">
+                            <div class="flex flex-col justify-between h-full">
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">All Tokens</div>
+                                    <div class="flex flex-1 gap-1 items-center">
+                                        <div class="bg-blue-600 h-5" style="width: 20%;"></div>
+                                        <div class="bg-cyan-400 h-5" style="width: 15%;"></div>
+                                        <div class="bg-neutral-400 h-5" style="width: 12%;"></div>
+                                        <div class="bg-yellow-400 h-5" style="width: 8%;"></div>
+                                        <div class="bg-red-400 h-5" style="width: 5%;"></div>
+                                        <div class="bg-green-400 h-5" style="width: 40%;"></div>
                                     </div>
                                 </div>
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">Top P = 0.9</div>
-                                    <div class="d-flex flex-grow-1">
-                                        <div class="bg-primary p-1 me-1" style="width: 20%; height: 20px;"></div>
-                                        <div class="bg-info p-1 me-1" style="width: 15%; height: 20px;"></div>
-                                        <div class="bg-secondary p-1 me-1" style="width: 12%; height: 20px;"></div>
-                                        <div class="bg-warning p-1 me-1" style="width: 8%; height: 20px;"></div>
-                                        <div class="bg-danger p-1 me-1" style="width: 5%; height: 20px;"></div>
-                                        <div class="bg-light p-1 me-1 border" style="width: 40%; height: 20px;"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">Top P = 0.9</div>
+                                    <div class="flex flex-1 gap-1 items-center">
+                                        <div class="bg-blue-600 h-5" style="width: 20%;"></div>
+                                        <div class="bg-cyan-400 h-5" style="width: 15%;"></div>
+                                        <div class="bg-neutral-400 h-5" style="width: 12%;"></div>
+                                        <div class="bg-yellow-400 h-5" style="width: 8%;"></div>
+                                        <div class="bg-red-400 h-5" style="width: 5%;"></div>
+                                        <div class="bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 h-5" style="width: 40%;"></div>
                                     </div>
                                 </div>
-                                <div class="viz-row d-flex">
-                                    <div class="me-2 text-end" style="width: 90px;">Top K = 4</div>
-                                    <div class="d-flex flex-grow-1">
-                                        <div class="bg-primary p-1 me-1" style="width: 20%; height: 20px;"></div>
-                                        <div class="bg-info p-1 me-1" style="width: 15%; height: 20px;"></div>
-                                        <div class="bg-secondary p-1 me-1" style="width: 12%; height: 20px;"></div>
-                                        <div class="bg-warning p-1 me-1" style="width: 8%; height: 20px;"></div>
-                                        <div class="bg-light p-1 me-1 border" style="width: 45%; height: 20px;"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="text-right text-xs text-neutral-500 dark:text-neutral-400 shrink-0" style="width: 90px;">Top K = 4</div>
+                                    <div class="flex flex-1 gap-1 items-center">
+                                        <div class="bg-blue-600 h-5" style="width: 20%;"></div>
+                                        <div class="bg-cyan-400 h-5" style="width: 15%;"></div>
+                                        <div class="bg-neutral-400 h-5" style="width: 12%;"></div>
+                                        <div class="bg-yellow-400 h-5" style="width: 8%;"></div>
+                                        <div class="bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 h-5" style="width: 45%;"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <small class="text-muted">Top P and Top K restrict token selection to the most likely tokens, limiting less probable choices.</small>
+                        <p class="text-xs text-neutral-500 dark:text-neutral-400">Top P and Top K restrict token selection to the most likely tokens, limiting less probable choices.</p>
                     </div>
                 </div>
-                
-                <div class="mt-3">
-                    <h6>Recommended Parameter Settings</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Task Type</th>
-                                <th>Temperature</th>
-                                <th>Top P</th>
-                                <th>Top K</th>
-                                <th>Best For</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Creative Writing</strong></td>
-                                <td>0.8 - 1.5</td>
-                                <td>0.9 - 1.0</td>
-                                <td>50 - 80</td>
-                                <td>Stories, poetry, brainstorming ideas</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Balanced</strong></td>
-                                <td>0.7</td>
-                                <td>0.9</td>
-                                <td>40</td>
-                                <td>General use, balanced between creativity and precision</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Precise/Factual</strong></td>
-                                <td>0.1 - 0.3</td>
-                                <td>0.6 - 0.8</td>
-                                <td>10 - 30</td>
-                                <td>Factual responses, Q&A, summarization</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Code Generation</strong></td>
-                                <td>0.2 - 0.5</td>
-                                <td>0.8 - 0.9</td>
-                                <td>30 - 50</td>
-                                <td>Writing code, debugging, explanations</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <div>
+                    <h6 class="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Recommended Parameter Settings</h6>
+                    <div class="rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-neutral-50 dark:bg-neutral-900">
+                                <tr>
+                                    <th class="px-4 py-2 text-left font-medium text-neutral-700 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700">Task Type</th>
+                                    <th class="px-4 py-2 text-left font-medium text-neutral-700 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700">Temperature</th>
+                                    <th class="px-4 py-2 text-left font-medium text-neutral-700 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700">Top P</th>
+                                    <th class="px-4 py-2 text-left font-medium text-neutral-700 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700">Top K</th>
+                                    <th class="px-4 py-2 text-left font-medium text-neutral-700 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700">Best For</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                                <tr>
+                                    <td class="px-4 py-2 text-neutral-900 dark:text-neutral-100 font-medium">Creative Writing</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.8 - 1.5</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.9 - 1.0</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">50 - 80</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">Stories, poetry, brainstorming ideas</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 text-neutral-900 dark:text-neutral-100 font-medium">Balanced</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.7</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.9</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">40</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">General use, balanced between creativity and precision</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 text-neutral-900 dark:text-neutral-100 font-medium">Precise/Factual</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.1 - 0.3</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.6 - 0.8</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">10 - 30</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">Factual responses, Q&amp;A, summarization</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 text-neutral-900 dark:text-neutral-100 font-medium">Code Generation</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.2 - 0.5</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">0.8 - 0.9</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">30 - 50</td>
+                                    <td class="px-4 py-2 text-neutral-600 dark:text-neutral-400">Writing code, debugging, explanations</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="flex justify-end px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
+                <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors" onclick="this.closest('dialog').close()">Close</button>
             </div>
         </div>
-    </div>
-</div>
+</dialog>
+{% endblock %}
 
-<div class="container">
-    <div class="row mb-3">
-        <div class="col-12">
-            <h1>Generate Text</h1>
-        </div>
+{% block content %}
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">Generate Text</h1>
     </div>
 
-    <div class="row">
-        <div class="col-12 col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Generation Options</h5>
-                    
-                    <div class="mb-3">
-                        <label for="model-select" class="form-label">Model</label>
-                        <select class="form-select" id="model-select">
-                            <option value="" disabled selected>Select a model</option>
-                            {% for model in models %}
+    <div class="flex flex-col md:flex-row gap-4">
+        <!-- Left column: options -->
+        <div class="w-full md:w-96 shrink-0">
+            <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm p-5">
+                <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-4">Generation Options</h5>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Model</label>
+                    <div class="relative" id="model-dropdown-wrapper">
+                        <!-- Hidden native select preserved for JS compatibility -->
+                        <select id="model-select" class="hidden">
+                            <option value="" disabled {% if not request.args.get('model') %}selected{% endif %}>Select a model</option>
+                            {% for model in models|sort(attribute='name') %}
                             <option value="{{ model.name }}" {% if request.args.get('model') == model.name %}selected{% endif %}>{{ model.name }}</option>
                             {% endfor %}
                         </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="system-prompt" class="form-label">System Prompt (optional)</label>
-                        <textarea class="form-control" id="system-prompt" rows="3" placeholder="System instructions for the model..."></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="prompt-input" class="form-label">Prompt</label>
-                        <textarea class="form-control" id="prompt-input" rows="5" placeholder="Enter your prompt here..." required></textarea>
-                    </div>
-                    
-                    <div class="accordion" id="advancedOptionsAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingAdvanced">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
-                                    Parameter Tuning
-                                </button>
-                            </h2>
-                            <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#advancedOptionsAccordion">
-                                <div class="accordion-body">
-                                    <!-- Parameter Presets -->
-                                    <div class="mb-3 border-bottom pb-3">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <label for="preset-select" class="form-label">Parameter Presets</label>
-                                                <select class="form-select" id="preset-select">
-                                                    <option value="" selected>Custom</option>
-                                                    <option value="creative">Creative Writing</option>
-                                                    <option value="balanced">Balanced</option>
-                                                    <option value="precise">Precise/Factual</option>
-                                                    <option value="coding">Code Generation</option>
-                                                    <option disabled>──────────</option>
-                                                    <option value="custom1" class="user-preset-option d-none">Custom 1</option>
-                                                    <option value="custom2" class="user-preset-option d-none">Custom 2</option>
-                                                    <option value="custom3" class="user-preset-option d-none">Custom 3</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4 d-flex align-items-end mb-2">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#savePresetModal">
-                                                    <i class="fas fa-save me-1"></i> Save Preset
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-12 d-flex justify-content-between">
-                                                <button type="button" class="btn btn-sm btn-link" data-bs-toggle="modal" data-bs-target="#paramVisualizationModal">
-                                                    <i class="fas fa-chart-bar me-1"></i> Learn about parameters
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-link text-danger d-none" id="delete-preset-btn">
-                                                    <i class="fas fa-trash me-1"></i> Delete preset
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Temperature with info tooltip -->
-                                    <div class="mb-3">
-                                        <label for="temperature" class="form-label d-flex justify-content-between align-items-center">
-                                            <div>
-                                                Temperature: <span id="temperature-value" class="badge bg-primary">0.7</span>
-                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Controls randomness. Higher values (e.g., 1.0) make output more random, lower values (e.g., 0.2) make it more deterministic."></i>
-                                            </div>
-                                        </label>
-                                        <input type="range" class="form-range" min="0" max="2" step="0.1" value="0.7" id="temperature">
-                                        <div class="d-flex justify-content-between text-muted small">
-                                            <span>Precise</span>
-                                            <span>Balanced</span>
-                                            <span>Creative</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Top P with info tooltip -->
-                                    <div class="mb-3">
-                                        <label for="top-p" class="form-label d-flex justify-content-between align-items-center">
-                                            <div>
-                                                Top P: <span id="top-p-value" class="badge bg-primary">0.9</span>
-                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Nucleus sampling. Only consider tokens with top_p cumulative probability. Lower values reduce randomness."></i>
-                                            </div>
-                                        </label>
-                                        <input type="range" class="form-range" min="0" max="1" step="0.05" value="0.9" id="top-p">
-                                        <div class="d-flex justify-content-between text-muted small">
-                                            <span>Focused</span>
-                                            <span>Balanced</span>
-                                            <span>Diverse</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Top K with info tooltip -->
-                                    <div class="mb-3">
-                                        <label for="top-k" class="form-label d-flex justify-content-between align-items-center">
-                                            <div>
-                                                Top K: <span id="top-k-value" class="badge bg-primary">40</span>
-                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Only sample from the top K most likely tokens. Lower values increase focus, higher values increase diversity."></i>
-                                            </div>
-                                        </label>
-                                        <input type="range" class="form-range" min="1" max="100" step="1" value="40" id="top-k">
-                                        <div class="d-flex justify-content-between text-muted small">
-                                            <span>Focused</span>
-                                            <span>Balanced</span>
-                                            <span>Diverse</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Max Tokens with info tooltip -->
-                                    <div class="mb-3">
-                                        <label for="max-tokens" class="form-label d-flex align-items-center">
-                                            <div>
-                                                Max Tokens
-                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Maximum number of tokens to generate. Leave empty to use the model's default."></i>
-                                            </div>
-                                        </label>
-                                        <input type="number" class="form-control" id="max-tokens" placeholder="Default: model's max context" min="1">
-                                    </div>
-                                    
-                                    <!-- Context Size with info tooltip -->
-                                    <div class="mb-3">
-                                        <label for="context-size" class="form-label d-flex align-items-center">
-                                            <div>
-                                                Context Size
-                                                <i class="fas fa-info-circle ms-1" data-bs-toggle="tooltip" title="Maximum number of tokens in the context window. Higher values allow for longer conversations but use more memory."></i>
-                                            </div>
-                                        </label>
-                                        <input type="number" class="form-control" id="context-size" placeholder="Default: model defined" min="512" max="131072">
-                                        <div class="form-text">Common values: 2048, 4096, 8192, 16384, 32768</div>
-                                    </div>
-                                </div>
+                        <!-- Trigger button -->
+                        <button type="button" id="model-trigger"
+                            class="w-full inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                            <img id="model-trigger-icon" src="" class="w-4 h-4 hidden shrink-0" alt="">
+                            <span id="model-trigger-label" class="flex-1 text-left truncate text-neutral-500 dark:text-neutral-400">Select a model</span>
+                            <svg id="model-trigger-chevron" class="w-3.5 h-3.5 shrink-0 text-neutral-400 transition-transform duration-150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <!-- Dropdown panel -->
+                        <div id="model-dropdown-panel"
+                            class="hidden absolute top-full left-0 mt-1 w-full max-h-72 overflow-y-auto rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg z-50 py-1">
+                            {% for model in models|sort(attribute='name') %}
+                            <div class="model-option flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                                data-value="{{ model.name }}">
+                                <img class="model-option-icon w-4 h-4 shrink-0 hidden" src="" alt="">
+                                <span class="flex-1 truncate">{{ model.name }}</span>
+                                <svg class="model-option-check w-3.5 h-3.5 shrink-0 {% if request.args.get('model') != model.name %}hidden{% endif %} text-neutral-700 dark:text-neutral-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/>
+                                </svg>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
-                    
-                    <div class="d-grid mt-3">
-                        <button class="btn btn-primary" id="generate-button" disabled>
-                            <i class="fas fa-magic me-2"></i> Generate
-                        </button>
-                    </div>
                 </div>
+
+                <div class="mb-4">
+                    <label for="system-prompt" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">System Prompt (optional)</label>
+                    <textarea class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="system-prompt" rows="3" placeholder="System instructions for the model..."></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="prompt-input" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Prompt</label>
+                    <textarea class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="prompt-input" rows="5" placeholder="Enter your prompt here..." required></textarea>
+                </div>
+
+                <!-- Parameter Tuning accordion -->
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 mb-4 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg list-none">
+                        Parameter Tuning
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 pt-2">
+                        <!-- Parameter Presets -->
+                        <div class="mb-4 border-b border-neutral-200 dark:border-neutral-700 pb-4">
+                            <div class="flex gap-2 items-end">
+                                <div class="flex-1">
+                                    <label for="preset-select" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Parameter Presets</label>
+                                    <select class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="preset-select">
+                                        <option value="" selected>Custom</option>
+                                        <option value="creative">Creative Writing</option>
+                                        <option value="balanced">Balanced</option>
+                                        <option value="precise">Precise/Factual</option>
+                                        <option value="coding">Code Generation</option>
+                                        <option disabled>──────────</option>
+                                        <option value="custom1" class="user-preset-option hidden">Custom 1</option>
+                                        <option value="custom2" class="user-preset-option hidden">Custom 2</option>
+                                        <option value="custom3" class="user-preset-option hidden">Custom 3</option>
+                                    </select>
+                                </div>
+                                <div class="shrink-0 mb-0.5">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors" onclick="updateModalValues(); document.getElementById('savePresetModal').showModal()">
+                                        <i class="fas fa-save mr-1"></i> Save Preset
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-2">
+                                <button type="button" class="text-sm text-blue-600 dark:text-blue-400 hover:underline" onclick="document.getElementById('paramVisualizationModal').showModal()">
+                                    <i class="fas fa-chart-bar mr-1"></i> Learn about parameters
+                                </button>
+                                <button type="button" class="text-sm text-red-600 dark:text-red-400 hover:underline hidden" id="delete-preset-btn">
+                                    <i class="fas fa-trash mr-1"></i> Delete preset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="temperature" class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                    Temperature
+                                    <i class="fas fa-info-circle ml-1 text-neutral-400" data-bs-toggle="tooltip" title="Controls randomness. Higher values (e.g., 1.0) make output more random, lower values (e.g., 0.2) make it more deterministic."></i>
+                                </label>
+                                <span class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold bg-neutral-900 dark:bg-white text-white dark:text-neutral-900" id="temperature-value">0.7</span>
+                            </div>
+                            <input type="range" class="w-full accent-neutral-900 dark:accent-white" min="0" max="2" step="0.1" value="0.7" id="temperature">
+                            <div class="flex justify-between text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+                                <span>Precise</span>
+                                <span>Balanced</span>
+                                <span>Creative</span>
+                            </div>
+                        </div>
+
+                        <!-- Top P -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="top-p" class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                    Top P
+                                    <i class="fas fa-info-circle ml-1 text-neutral-400" data-bs-toggle="tooltip" title="Nucleus sampling. Only consider tokens with top_p cumulative probability. Lower values reduce randomness."></i>
+                                </label>
+                                <span class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold bg-neutral-900 dark:bg-white text-white dark:text-neutral-900" id="top-p-value">0.9</span>
+                            </div>
+                            <input type="range" class="w-full accent-neutral-900 dark:accent-white" min="0" max="1" step="0.05" value="0.9" id="top-p">
+                            <div class="flex justify-between text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+                                <span>Focused</span>
+                                <span>Balanced</span>
+                                <span>Diverse</span>
+                            </div>
+                        </div>
+
+                        <!-- Top K -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="top-k" class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                                    Top K
+                                    <i class="fas fa-info-circle ml-1 text-neutral-400" data-bs-toggle="tooltip" title="Only sample from the top K most likely tokens. Lower values increase focus, higher values increase diversity."></i>
+                                </label>
+                                <span class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold bg-neutral-900 dark:bg-white text-white dark:text-neutral-900" id="top-k-value">40</span>
+                            </div>
+                            <input type="range" class="w-full accent-neutral-900 dark:accent-white" min="1" max="100" step="1" value="40" id="top-k">
+                            <div class="flex justify-between text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+                                <span>Focused</span>
+                                <span>Balanced</span>
+                                <span>Diverse</span>
+                            </div>
+                        </div>
+
+                        <!-- Max Tokens -->
+                        <div class="mb-4">
+                            <label for="max-tokens" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                Max Tokens
+                                <i class="fas fa-info-circle ml-1 text-neutral-400" data-bs-toggle="tooltip" title="Maximum number of tokens to generate. Leave empty to use the model's default."></i>
+                            </label>
+                            <input type="number" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="max-tokens" placeholder="Default: model's max context" min="1">
+                        </div>
+
+                        <!-- Context Size -->
+                        <div class="mb-2">
+                            <label for="context-size" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                Context Size
+                                <i class="fas fa-info-circle ml-1 text-neutral-400" data-bs-toggle="tooltip" title="Maximum number of tokens in the context window. Higher values allow for longer conversations but use more memory."></i>
+                            </label>
+                            <input type="number" class="w-full rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400" id="context-size" placeholder="Default: model defined" min="512" max="131072">
+                            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Common values: 2048, 4096, 8192, 16384, 32768</p>
+                        </div>
+                    </div>
+                </details>
+
+                <button class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="generate-button" disabled>
+                    <i class="fas fa-magic mr-2"></i> Generate
+                </button>
             </div>
         </div>
 
-        <div class="col-12 col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Generated Output</h5>
-                    
-                    <div id="result-loading" class="d-none">
-                        <div class="d-flex align-items-center">
-                            <div class="loader me-3"></div>
-                            <span>Generating...</span>
-                        </div>
+        <!-- Right column: output -->
+        <div class="flex-1 min-w-0">
+            <div class="h-full min-h-max rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm p-5 flex flex-col">
+                <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-4">Generated Output</h5>
+
+                <div id="output-placeholder" class="flex flex-1 flex-col items-center justify-center text-center">
+                    <svg class="mb-4 h-8 w-8 text-neutral-300 dark:text-neutral-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2l2.09 6.41L20.5 10l-6.41 2.09L12 18.5l-2.09-6.41L3.5 10l6.41-2.09L12 2z"/>
+                    </svg>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 max-w-xs">Enter your prompt on the left and click <span class="font-semibold text-neutral-700 dark:text-neutral-300">Generate</span> to produce output.</p>
+                </div>
+
+                <div id="result-loading" class="hidden">
+                    <div class="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
+                        <div class="animate-spin h-5 w-5 border-2 border-neutral-200 dark:border-neutral-700 border-t-neutral-900 dark:border-t-white rounded-full shrink-0"></div>
+                        <span>Generating...</span>
                     </div>
-                    
-                    <div id="result-container" class="result-container d-none">
-                        <!-- Generated text will appear here -->
-                    </div>
-                    
-                    <div id="stats-container" class="stats-container d-none">
-                        <!-- Generation stats will appear here -->
-                    </div>
+                </div>
+
+                <div id="result-container" class="result-container hidden bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md p-4 text-sm text-neutral-800 dark:text-neutral-200 mt-3">
+                    <!-- Generated text will appear here -->
+                </div>
+
+                <div id="stats-container" class="hidden text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md px-3 py-2 mt-3">
+                    <!-- Generation stats will appear here -->
                 </div>
             </div>
         </div>
@@ -424,6 +427,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="/static/js/provider-icons.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -435,14 +439,87 @@
         const resultContainer = document.getElementById('result-container');
         const resultLoading = document.getElementById('result-loading');
         const statsContainer = document.getElementById('stats-container');
-        
+
+        // ── Custom model dropdown ──────────────────────────────────────────
+        // getProviderIcon() and resolveIconSrc() are provided by /static/js/provider-icons.js
+
+        const modelTrigger        = document.getElementById('model-trigger');
+        const modelTriggerIcon    = document.getElementById('model-trigger-icon');
+        const modelTriggerLabel   = document.getElementById('model-trigger-label');
+        const modelTriggerChevron = document.getElementById('model-trigger-chevron');
+        const modelDropdownPanel  = document.getElementById('model-dropdown-panel');
+        const modelOptions        = document.querySelectorAll('.model-option');
+
+        function setTriggerState(modelName) {
+            modelTriggerLabel.textContent = modelName || 'Select a model';
+            modelTriggerLabel.classList.toggle('text-neutral-500', !modelName);
+            modelTriggerLabel.classList.toggle('dark:text-neutral-400', !modelName);
+            const src = modelName ? resolveIconSrc(modelName) : null;
+            if (src) {
+                modelTriggerIcon.src = src;
+                modelTriggerIcon.classList.remove('hidden');
+            } else {
+                modelTriggerIcon.classList.add('hidden');
+            }
+        }
+
+        function refreshOptionIcons() {
+            modelOptions.forEach(opt => {
+                const iconEl = opt.querySelector('.model-option-icon');
+                const src = resolveIconSrc(opt.dataset.value);
+                if (src) { iconEl.src = src; iconEl.classList.remove('hidden'); }
+                else { iconEl.classList.add('hidden'); }
+            });
+        }
+
+        function openDropdown() {
+            modelDropdownPanel.classList.remove('hidden');
+            modelTriggerChevron.style.transform = 'rotate(180deg)';
+        }
+
+        function closeDropdown() {
+            modelDropdownPanel.classList.add('hidden');
+            modelTriggerChevron.style.transform = '';
+        }
+
+        modelTrigger.addEventListener('click', () => {
+            modelDropdownPanel.classList.contains('hidden') ? openDropdown() : closeDropdown();
+        });
+
+        document.addEventListener('click', e => {
+            if (!document.getElementById('model-dropdown-wrapper').contains(e.target)) closeDropdown();
+        });
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDropdown(); });
+
+        modelOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.dataset.value;
+                modelSelect.value = val;
+                modelOptions.forEach(o => o.querySelector('.model-option-check').classList.add('hidden'));
+                opt.querySelector('.model-option-check').classList.remove('hidden');
+                setTriggerState(val);
+                closeDropdown();
+                modelSelect.dispatchEvent(new Event('change'));
+            });
+        });
+
+        new MutationObserver(() => {
+            refreshOptionIcons();
+            if (modelSelect.value) setTriggerState(modelSelect.value);
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        refreshOptionIcons();
+        if (modelSelect.value) setTriggerState(modelSelect.value);
+        // ── End custom dropdown ────────────────────────────────────────────
+
         // Parameter tuning elements
         const presetSelect = document.getElementById('preset-select');
         const deletePresetBtn = document.getElementById('delete-preset-btn');
         const savePresetBtn = document.getElementById('save-preset-btn');
         const presetNameInput = document.getElementById('preset-name');
         const presetDescriptionInput = document.getElementById('preset-description');
-        
+
         // Parameter sliders and values
         const temperatureSlider = document.getElementById('temperature');
         const temperatureValue = document.getElementById('temperature-value');
@@ -452,74 +529,22 @@
         const topKValue = document.getElementById('top-k-value');
         const maxTokens = document.getElementById('max-tokens');
         const contextSize = document.getElementById('context-size');
-        
+
         // Modal parameter values
         const modalTemperatureValue = document.getElementById('modal-temperature-value');
         const modalTopPValue = document.getElementById('modal-top-p-value');
         const modalTopKValue = document.getElementById('modal-top-k-value');
         const modalMaxTokensValue = document.getElementById('modal-max-tokens-value');
         const modalContextSizeValue = document.getElementById('modal-context-size-value');
-        
-        // Initialize tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-        
-        // Fix modal backdrop z-index and ensure modals are clickable
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('shown.bs.modal', function() {
-                setTimeout(() => {
-                    const backdrops = document.querySelectorAll('.modal-backdrop');
-                    backdrops.forEach(backdrop => {
-                        backdrop.style.zIndex = '1040';
-                    });
-                }, 50);
-            });
-        });
-        
-        // Explicitly initialize both modals for proper interaction
-        const paramVisualizationModalEl = document.getElementById('paramVisualizationModal');
-        const savePresetModalEl = document.getElementById('savePresetModal');
-        
-        // Initialize the parameter visualization modal
-        if (paramVisualizationModalEl) {
-            // Initialize with explicit options to fix clickability issues
-            window.paramVisualizationModal = new bootstrap.Modal(paramVisualizationModalEl, {
-                backdrop: false,
-                keyboard: true
-            });
-            
-            // Find the button that opens the param visualization modal and update its behavior
-            const paramVisualizationBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#paramVisualizationModal"]');
-            if (paramVisualizationBtn) {
-                paramVisualizationBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.paramVisualizationModal.show();
-                });
-            }
-        }
-        
-        // Initialize the save preset modal
-        if (savePresetModalEl) {
-            // Initialize with explicit options to fix clickability issues
-            window.savePresetModal = new bootstrap.Modal(savePresetModalEl, {
-                backdrop: false,
-                keyboard: true
-            });
-            
-            // Find the button that opens the save preset modal and update its behavior
-            const savePresetBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#savePresetModal"]');
-            if (savePresetBtn) {
-                savePresetBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.savePresetModal.show();
-                });
-            }
-        }
-        
+
+        // Initialize tooltips — removed (Bootstrap tooltip JS not loaded)
+
+        // Fix modal backdrop z-index — removed (using native <dialog>)
+
+        // Modal init — removed (using native <dialog>)
+
         let isGenerating = false;
-        
+
         // Predefined preset configurations
         const presetConfigurations = {
             'creative': {
@@ -559,43 +584,43 @@
                 context_size: '8192'
             }
         };
-        
+
         // Load user presets from localStorage
         loadUserPresets();
-        
+
         // Event Listeners
         modelSelect.addEventListener('change', updateGenerateButton);
         promptInput.addEventListener('input', updateGenerateButton);
-        
+
         // Parameter change events
         temperatureSlider.addEventListener('input', function() {
             temperatureValue.textContent = this.value;
-            presetSelect.value = ''; // Reset to custom when user changes params
+            presetSelect.value = '';
             updateDeleteButtonVisibility();
         });
-        
+
         topPSlider.addEventListener('input', function() {
             topPValue.textContent = this.value;
-            presetSelect.value = ''; // Reset to custom when user changes params
+            presetSelect.value = '';
             updateDeleteButtonVisibility();
         });
-        
+
         topKSlider.addEventListener('input', function() {
             topKValue.textContent = this.value;
-            presetSelect.value = ''; // Reset to custom when user changes params
+            presetSelect.value = '';
             updateDeleteButtonVisibility();
         });
-        
+
         maxTokens.addEventListener('input', function() {
-            presetSelect.value = ''; // Reset to custom when user changes params
+            presetSelect.value = '';
             updateDeleteButtonVisibility();
         });
-        
+
         contextSize.addEventListener('input', function() {
-            presetSelect.value = ''; // Reset to custom when user changes params
+            presetSelect.value = '';
             updateDeleteButtonVisibility();
         });
-        
+
         // Save preset button
         savePresetBtn.addEventListener('click', function() {
             const presetName = presetNameInput.value.trim();
@@ -603,79 +628,63 @@
                 alert('Please enter a name for your preset');
                 return;
             }
-            
+
             saveUserPreset(presetName);
-            
-            // Hide modal
-            if (window.savePresetModal) {
-                window.savePresetModal.hide();
-            } else {
-                // Fallback to the old method if our initialization didn't work
-                const savePresetModal = bootstrap.Modal.getInstance(document.getElementById('savePresetModal'));
-                if (savePresetModal) savePresetModal.hide();
-            }
+
+            document.getElementById('savePresetModal').close();
         });
-        
+
         // Delete preset button
         deletePresetBtn.addEventListener('click', function() {
             if (confirm('Are you sure you want to delete this preset?')) {
                 deleteUserPreset(presetSelect.value);
             }
         });
-        
+
         // Preset selection change
         presetSelect.addEventListener('change', function() {
             applyPreset(this.value);
             updateDeleteButtonVisibility();
         });
-        
+
         // Generate text
         generateButton.addEventListener('click', generateText);
-        
+
         // Initialize if model is preselected from URL
         if (modelSelect.value) {
             updateGenerateButton();
         }
-        
-        // Update the save preset modal when shown
-        document.getElementById('savePresetModal').addEventListener('show.bs.modal', function() {
-            updateModalValues();
-        });
-        
+
         // Functions
         function updateGenerateButton() {
             generateButton.disabled = !modelSelect.value || !promptInput.value.trim() || isGenerating;
         }
-        
+
         function updateDeleteButtonVisibility() {
             const selectedPreset = presetSelect.value;
-            
-            // Only show delete button for user presets (custom1, custom2, etc.)
             if (selectedPreset && selectedPreset.startsWith('custom')) {
-                deletePresetBtn.classList.remove('d-none');
+                deletePresetBtn.classList.remove('hidden');
             } else {
-                deletePresetBtn.classList.add('d-none');
+                deletePresetBtn.classList.add('hidden');
             }
         }
-        
+
         function loadUserPresets() {
             try {
                 const userPresets = JSON.parse(localStorage.getItem('webollama_userPresets')) || {};
-                
-                // Clear existing custom options
+
                 document.querySelectorAll('.user-preset-option').forEach(option => {
-                    option.classList.add('d-none');
+                    option.classList.add('hidden');
                     option.textContent = option.value;
                 });
-                
-                // Add user presets to the select
+
                 let index = 0;
                 for (const key in userPresets) {
                     if (userPresets.hasOwnProperty(key) && index < 3) {
                         const option = document.querySelector(`.user-preset-option:nth-child(${index + 1})`);
                         if (option) {
                             option.textContent = userPresets[key].name;
-                            option.classList.remove('d-none');
+                            option.classList.remove('hidden');
                             index++;
                         }
                     }
@@ -684,10 +693,9 @@
                 console.error('Error loading user presets:', error);
             }
         }
-        
+
         function saveUserPreset(presetName) {
             try {
-                // Get current parameters
                 const preset = {
                     name: presetName,
                     description: presetDescriptionInput.value.trim(),
@@ -697,11 +705,9 @@
                     max_tokens: maxTokens.value,
                     context_size: contextSize.value
                 };
-                
-                // Get existing presets
+
                 const userPresets = JSON.parse(localStorage.getItem('webollama_userPresets')) || {};
-                
-                // Find a key to use (custom1, custom2, custom3)
+
                 let presetKey = '';
                 for (let i = 1; i <= 3; i++) {
                     if (!userPresets[`custom${i}`]) {
@@ -709,67 +715,56 @@
                         break;
                     }
                 }
-                
-                // If all slots are used, use the first one
+
                 if (!presetKey) {
                     presetKey = 'custom1';
                 }
-                
-                // Save the preset
+
                 userPresets[presetKey] = preset;
                 localStorage.setItem('webollama_userPresets', JSON.stringify(userPresets));
-                
-                // Update the UI
+
                 loadUserPresets();
-                
-                // Select the new preset
+
                 presetSelect.value = presetKey;
                 updateDeleteButtonVisibility();
-                
+
             } catch (error) {
                 console.error('Error saving user preset:', error);
                 alert('Failed to save preset: ' + error.message);
             }
         }
-        
+
         function deleteUserPreset(presetKey) {
             try {
                 if (!presetKey || !presetKey.startsWith('custom')) {
                     return;
                 }
-                
-                // Get existing presets
+
                 const userPresets = JSON.parse(localStorage.getItem('webollama_userPresets')) || {};
-                
-                // Remove the preset
                 delete userPresets[presetKey];
                 localStorage.setItem('webollama_userPresets', JSON.stringify(userPresets));
-                
-                // Update the UI
+
                 loadUserPresets();
-                
-                // Reset selection
+
                 presetSelect.value = '';
                 updateDeleteButtonVisibility();
-                
+
             } catch (error) {
                 console.error('Error deleting user preset:', error);
                 alert('Failed to delete preset: ' + error.message);
             }
         }
-        
+
         function applyPreset(presetKey) {
             if (!presetKey) {
-                return; // Custom/no preset selected
+                return;
             }
-            
+
             let preset = null;
-            
-            // Check if it's a predefined preset
+
             if (presetConfigurations[presetKey]) {
                 preset = presetConfigurations[presetKey];
             } else if (presetKey.startsWith('custom')) {
-                // Check if it's a user preset
                 try {
                     const userPresets = JSON.parse(localStorage.getItem('webollama_userPresets')) || {};
                     preset = userPresets[presetKey];
@@ -778,73 +773,68 @@
                     return;
                 }
             }
-            
+
             if (!preset) {
                 return;
             }
-            
-            // Apply preset values
+
             temperatureSlider.value = preset.temperature;
             temperatureValue.textContent = preset.temperature;
-            
+
             topPSlider.value = preset.top_p;
             topPValue.textContent = preset.top_p;
-            
+
             topKSlider.value = preset.top_k;
             topKValue.textContent = preset.top_k;
-            
+
             maxTokens.value = preset.max_tokens || '';
             contextSize.value = preset.context_size || '';
         }
-        
+
         function updateModalValues() {
-            // Update the values in the save preset modal
             modalTemperatureValue.textContent = temperatureSlider.value;
             modalTopPValue.textContent = topPSlider.value;
             modalTopKValue.textContent = topKSlider.value;
             modalMaxTokensValue.textContent = maxTokens.value || 'Default';
             modalContextSizeValue.textContent = contextSize.value || 'Default';
-            
-            // Clear input fields
+
             presetNameInput.value = '';
             presetDescriptionInput.value = '';
         }
-        
+
         function generateText() {
             if (isGenerating) return;
-            
+
             const model = modelSelect.value;
             const prompt = promptInput.value.trim();
             const system = systemPrompt.value.trim();
-            
+
             if (!model || !prompt) return;
-            
-            // Prepare options
+
             const options = {};
             options.temperature = parseFloat(temperatureSlider.value);
             options.top_p = parseFloat(topPSlider.value);
             options.top_k = parseInt(topKSlider.value);
-            
+
             if (maxTokens.value) {
                 options.num_predict = parseInt(maxTokens.value);
             }
-            
+
             if (contextSize.value) {
                 options.num_ctx = parseInt(contextSize.value);
             }
-            
+
             // Show loading indicator
-            resultContainer.classList.add('d-none');
-            statsContainer.classList.add('d-none');
-            resultLoading.classList.remove('d-none');
-            
+            resultContainer.classList.add('hidden');
+            statsContainer.classList.add('hidden');
+            document.getElementById('output-placeholder').classList.add('hidden');
+            resultLoading.classList.remove('hidden');
+
             isGenerating = true;
             generateButton.disabled = true;
-            
-            // Get CSRF token
+
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            
-            // Send to API
+
             fetch('/api/generate', {
                 method: 'POST',
                 headers: {
@@ -860,45 +850,42 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Hide loading indicator
-                resultLoading.classList.add('d-none');
-                
+                resultLoading.classList.add('hidden');
+
                 if (data.error) {
                     showError(data.error);
                 } else {
-                    // Display the result
                     resultContainer.innerHTML = marked.parse(data.response || '');
-                    resultContainer.classList.remove('d-none');
-                    
-                    // Display stats
+                    resultContainer.classList.remove('hidden');
+
                     if (data.total_duration || data.eval_count) {
                         const stats = [];
-                        
+
                         if (data.eval_count) {
                             stats.push(`Tokens generated: ${data.eval_count}`);
                         }
-                        
+
                         if (data.prompt_eval_count) {
                             stats.push(`Prompt tokens: ${data.prompt_eval_count}`);
                         }
-                        
+
                         if (data.eval_duration) {
                             const tokensPerSec = (data.eval_count / (data.eval_duration / 1e9)).toFixed(2);
                             stats.push(`Generation speed: ${tokensPerSec} tokens/sec`);
                         }
-                        
+
                         if (data.total_duration) {
                             const seconds = (data.total_duration / 1e9).toFixed(2);
                             stats.push(`Total time: ${seconds} seconds`);
                         }
-                        
-                        statsContainer.innerHTML = stats.join(' • ');
-                        statsContainer.classList.remove('d-none');
+
+                        statsContainer.innerHTML = stats.join(' &bull; ');
+                        statsContainer.classList.remove('hidden');
                     }
                 }
             })
             .catch(error => {
-                resultLoading.classList.add('d-none');
+                resultLoading.classList.add('hidden');
                 if (error.message && error.message.includes("Unexpected token '<'")) {
                     showError('Server error: The server returned an HTML page instead of JSON. This may be due to CSRF token issues or the Ollama service not running.');
                 } else {
@@ -910,12 +897,12 @@
                 updateGenerateButton();
             });
         }
-        
+
         function showError(message) {
-            resultContainer.innerHTML = `<div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle me-2"></i> ${message}
+            resultContainer.innerHTML = `<div class="flex items-start gap-2 px-4 py-3 rounded-md border text-sm bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300">
+                <i class="fas fa-exclamation-circle mt-0.5 shrink-0"></i><span>${message}</span>
             </div>`;
-            resultContainer.classList.remove('d-none');
+            resultContainer.classList.remove('hidden');
         }
     });
 </script>

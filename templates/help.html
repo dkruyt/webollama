@@ -3,57 +3,50 @@
 {% block title %}WebOllama - Help & Documentation{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="mb-4">
-        <h1>WebOllama Help & Documentation</h1>
-        <p class="text-muted">A comprehensive guide to using WebOllama</p>
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">WebOllama Help & Documentation</h1>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">A comprehensive guide to using WebOllama</p>
     </div>
 
     <!-- Table of Contents -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Table of Contents</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Table of Contents</h2>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="list-group">
-                        <a href="#overview" class="list-group-item list-group-item-action">Overview</a>
-                        <a href="#home" class="list-group-item list-group-item-action">Home Page</a>
-                        <a href="#models" class="list-group-item list-group-item-action">Models</a>
-                        <a href="#running-models" class="list-group-item list-group-item-action">Running Models</a>
-                    </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <a href="#overview" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Overview</a>
+                    <a href="#home" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Home Page</a>
+                    <a href="#models" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Models</a>
+                    <a href="#running-models" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Running Models</a>
                 </div>
-                <div class="col-md-4">
-                    <div class="list-group">
-                        <a href="#pull-model" class="list-group-item list-group-item-action">Pull Model</a>
-                        <a href="#create-model" class="list-group-item list-group-item-action">Create Model</a>
-                        <a href="#chat" class="list-group-item list-group-item-action">Chat</a>
-                        <a href="#generate" class="list-group-item list-group-item-action">Generate</a>
-                    </div>
+                <div class="space-y-1">
+                    <a href="#pull-model" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Pull Model</a>
+                    <a href="#create-model" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Create Model</a>
+                    <a href="#chat" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Chat</a>
+                    <a href="#generate" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Generate</a>
                 </div>
-                <div class="col-md-4">
-                    <div class="list-group">
-                        <a href="#version" class="list-group-item list-group-item-action">Ollama Version</a>
-                        <a href="#model-parameters" class="list-group-item list-group-item-action">Model Parameters</a>
-                        <a href="#troubleshooting" class="list-group-item list-group-item-action">Troubleshooting</a>
-                        <a href="#faq" class="list-group-item list-group-item-action">FAQ</a>
-                    </div>
+                <div class="space-y-1">
+                    <a href="#version" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Ollama Version</a>
+                    <a href="#model-parameters" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Model Parameters</a>
+                    <a href="#troubleshooting" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">Troubleshooting</a>
+                    <a href="#faq" class="block px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 rounded transition-colors hover:underline">FAQ</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Overview Section -->
-    <div class="card mb-4" id="overview">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Overview</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="overview">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Overview</h2>
         </div>
-        <div class="card-body">
-            <p>WebOllama is a web interface for <a href="https://ollama.com" target="_blank">Ollama</a>, providing an easy-to-use front end for managing and interacting with local large language models (LLMs).</p>
-            
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
+            <p>WebOllama is a web interface for <a href="https://ollama.com" target="_blank" class="underline">Ollama</a>, providing an easy-to-use front end for managing and interacting with local large language models (LLMs).</p>
             <p>With WebOllama, you can:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Pull and manage models from the Ollama library</li>
                 <li>Create customized models with specific parameters and instructions</li>
                 <li>Chat with models in a conversational interface</li>
@@ -61,399 +54,389 @@
                 <li>Monitor running models and system resources</li>
                 <li>Check and update your Ollama installation</li>
             </ul>
-            
             <p>WebOllama connects to your local Ollama installation, allowing you to run AI models entirely on your own hardware without sending data to external services.</p>
         </div>
     </div>
 
     <!-- Home Page Section -->
-    <div class="card mb-4" id="home">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Home Page</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="home">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Home Page</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The home page provides a dashboard overview of your Ollama installation, including:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Current Ollama version</li>
                 <li>Navigation options to all WebOllama features</li>
                 <li>Quick links to common actions</li>
             </ul>
-            
             <p>From here, you can use the sidebar to navigate to all other sections of the application.</p>
         </div>
     </div>
 
     <!-- Models Section -->
-    <div class="card mb-4" id="models">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Models</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="models">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Models</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Models page displays all language models available on your system. Each model entry shows:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Model name</li>
                 <li>File size</li>
                 <li>Parameter size (number of parameters in the model)</li>
                 <li>Quantization level (how the model is compressed)</li>
                 <li>Last modified date</li>
             </ul>
-            
-            <h3 class="h6 mt-3">Model Actions</h3>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Model Actions</h3>
             <p>For each model, you can perform the following actions:</p>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Button</th>
-                            <th>Icon</th>
-                            <th>Description</th>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Button</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Icon</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">Description</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td>View Details</td>
-                            <td><i class="fas fa-info-circle"></i></td>
-                            <td>Open the model details page to see full information about the model</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">View Details</td>
+                            <td class="py-2 pr-4 text-neutral-500"><i class="fas fa-info-circle"></i></td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Open the model details page to see full information about the model</td>
                         </tr>
                         <tr>
-                            <td>Update Model</td>
-                            <td><i class="fas fa-sync-alt"></i></td>
-                            <td>Re-pull the model to update it to the latest version</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Update Model</td>
+                            <td class="py-2 pr-4 text-neutral-500"><i class="fas fa-sync-alt"></i></td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Re-pull the model to update it to the latest version</td>
                         </tr>
                         <tr>
-                            <td>Delete</td>
-                            <td><i class="fas fa-trash"></i></td>
-                            <td>Delete the model from your system (requires confirmation)</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Delete</td>
+                            <td class="py-2 pr-4 text-neutral-500"><i class="fas fa-trash"></i></td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Delete the model from your system (requires confirmation)</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
-            <h3 class="h6 mt-3">Model Sorting</h3>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Model Sorting</h3>
             <p>You can sort the model list by:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Name (alphabetical)</li>
                 <li>Size (file size)</li>
                 <li>Modified date (most recent first)</li>
             </ul>
-            
             <p>Click on a sort button again to reverse the sort order (ascending/descending).</p>
         </div>
     </div>
 
     <!-- Running Models Section -->
-    <div class="card mb-4" id="running-models">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Running Models</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="running-models">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Running Models</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Running Models page shows all models currently loaded into memory and ready for use. This includes:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Model name</li>
                 <li>Time when the model was loaded</li>
                 <li>Expiration time (when the model will be automatically unloaded)</li>
                 <li>Status (active/inactive)</li>
             </ul>
-            
             <p>From this page, you can manually unload models to free up system memory when they're no longer needed.</p>
-            
-            <h3 class="h6 mt-3">Model Lifecycle</h3>
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-2">Model Lifecycle</h3>
             <p>Ollama automatically loads models when you first use them and keeps them in memory for faster response times. Models will automatically unload after a period of inactivity (typically 30 minutes) unless configured differently.</p>
-            
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> Keeping multiple large models loaded simultaneously can consume significant system RAM. If you're experiencing performance issues, try unloading unused models.
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20">
+                <i class="fas fa-info-circle size-4 text-blue-800 dark:text-blue-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-blue-800 dark:text-blue-300">Keeping multiple large models loaded simultaneously can consume significant system RAM. If you're experiencing performance issues, try unloading unused models.</span>
             </div>
         </div>
     </div>
 
     <!-- Pull Model Section -->
-    <div class="card mb-4" id="pull-model">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Pull Model</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="pull-model">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Pull Model</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Pull Model page allows you to download pre-trained models from the Ollama library. To pull a model:</p>
-            <ol>
+            <ol class="list-decimal list-inside space-y-1">
                 <li>Enter the model name in the input field (e.g., "llama3", "llama2:13b", "mistral:latest")</li>
                 <li>Click the "Pull Model" button</li>
                 <li>Wait for the download to complete (this may take some time depending on model size)</li>
             </ol>
-            
-            <h3 class="h6 mt-3">Popular Models</h3>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Model</th>
-                            <th>Size</th>
-                            <th>Description</th>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Popular Models</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Model</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Size</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">Description</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td>llama3.2</td>
-                            <td>~4GB</td>
-                            <td>Meta's Llama 3.2 model, great general-purpose model with good performance</td>
+                            <td class="py-2 pr-4 font-mono text-xs">llama3.2</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">~4GB</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Meta's Llama 3.2 model, great general-purpose model with good performance</td>
                         </tr>
                         <tr>
-                            <td>llama2</td>
-                            <td>~4GB</td>
-                            <td>Meta's Llama 2 model, good for general tasks</td>
+                            <td class="py-2 pr-4 font-mono text-xs">llama2</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">~4GB</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Meta's Llama 2 model, good for general tasks</td>
                         </tr>
                         <tr>
-                            <td>mistral</td>
-                            <td>~4GB</td>
-                            <td>Mistral 7B model with great performance for its size</td>
+                            <td class="py-2 pr-4 font-mono text-xs">mistral</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">~4GB</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Mistral 7B model with great performance for its size</td>
                         </tr>
                         <tr>
-                            <td>gemma:7b</td>
-                            <td>~4GB</td>
-                            <td>Google's Gemma model, efficient and capable</td>
+                            <td class="py-2 pr-4 font-mono text-xs">gemma:7b</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">~4GB</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Google's Gemma model, efficient and capable</td>
                         </tr>
                         <tr>
-                            <td>phi3:mini</td>
-                            <td>~2GB</td>
-                            <td>Microsoft's Phi-3 Mini model, surprisingly capable for its small size</td>
+                            <td class="py-2 pr-4 font-mono text-xs">phi3:mini</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">~2GB</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">Microsoft's Phi-3 Mini model, surprisingly capable for its small size</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
-            <h3 class="h6 mt-3">Model Tags</h3>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Model Tags</h3>
             <p>You can use tags to specify different versions or variants of a model:</p>
-            <ul>
-                <li><code>:latest</code> - The latest version (default if no tag specified)</li>
-                <li><code>:7b</code>, <code>:13b</code>, <code>:70b</code> - Different parameter sizes</li>
-                <li><code>:8_0</code>, <code>:4_0</code> - Different quantization levels</li>
+            <ul class="list-disc list-inside space-y-1">
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:latest</code> - The latest version (default if no tag specified)</li>
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:7b</code>, <code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:13b</code>, <code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:70b</code> - Different parameter sizes</li>
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:8_0</code>, <code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">:4_0</code> - Different quantization levels</li>
             </ul>
-            
-            <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle me-2"></i> Larger models provide better quality results but require more system resources (RAM and GPU memory).
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-600/20">
+                <i class="fas fa-exclamation-triangle size-4 text-yellow-800 dark:text-yellow-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-yellow-800 dark:text-yellow-300">Larger models provide better quality results but require more system resources (RAM and GPU memory).</span>
             </div>
         </div>
     </div>
 
     <!-- Create Model Section -->
-    <div class="card mb-4" id="create-model">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Create Model</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="create-model">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Create Model</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Create Model page allows you to customize existing models or create new ones. You can:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Create a personalized version of a model with custom instructions</li>
                 <li>Modify model parameters like temperature and context length</li>
                 <li>Add system prompts to guide the model's behavior</li>
                 <li>Specify custom templates for prompt formatting</li>
             </ul>
-            
-            <p>For detailed information about model creation options, visit the <a href="/model_help">Model Creation Help</a> page.</p>
-            
-            <h3 class="h6 mt-3">Creating from Existing Models</h3>
+            <p>For detailed information about model creation options, visit the <a href="/model_help" class="underline">Model Creation Help</a> page.</p>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Creating from Existing Models</h3>
             <p>The most common approach is to create a new model based on an existing one:</p>
-            <ol>
+            <ol class="list-decimal list-inside space-y-1">
                 <li>Choose a base model (e.g., llama3.2, mistral)</li>
                 <li>Provide a new unique name for your custom model</li>
                 <li>Add a system prompt to define behavior (e.g., "You are a helpful coding assistant")</li>
                 <li>Adjust parameters like temperature and context length if needed</li>
                 <li>Click "Create Model"</li>
             </ol>
-            
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> Custom models with specific instructions often perform better for specialized tasks than general-purpose models.
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20">
+                <i class="fas fa-info-circle size-4 text-blue-800 dark:text-blue-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-blue-800 dark:text-blue-300">Custom models with specific instructions often perform better for specialized tasks than general-purpose models.</span>
             </div>
         </div>
     </div>
 
     <!-- Chat Section -->
-    <div class="card mb-4" id="chat">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Chat</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="chat">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Chat</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Chat page provides a conversational interface for interacting with models:</p>
-            <ol>
+            <ol class="list-decimal list-inside space-y-1">
                 <li>Select a model from the dropdown menu</li>
                 <li>Type your message in the input field</li>
                 <li>Press "Send" or hit Enter to submit</li>
                 <li>View the model's response in the chat window</li>
             </ol>
-            
-            <h3 class="h6 mt-3">Chat Features</h3>
-            <ul>
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-2">Chat Features</h3>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Conversation history is maintained within the session</li>
                 <li>Token streaming shows responses as they're generated</li>
                 <li>Clear button to start a new conversation</li>
             </ul>
-            
-            <h3 class="h6 mt-3">Tips for Effective Chatting</h3>
-            <ul>
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-2">Tips for Effective Chatting</h3>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Be specific with your questions for more accurate responses</li>
                 <li>For complex tasks, break them down into smaller steps</li>
                 <li>Provide context in your messages when needed</li>
                 <li>Use custom models with relevant system prompts for specialized tasks</li>
             </ul>
-            
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> The model will remember previous messages in the current conversation, but this context is limited by the model's context window size.
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20">
+                <i class="fas fa-info-circle size-4 text-blue-800 dark:text-blue-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-blue-800 dark:text-blue-300">The model will remember previous messages in the current conversation, but this context is limited by the model's context window size.</span>
             </div>
         </div>
     </div>
 
     <!-- Generate Section -->
-    <div class="card mb-4" id="generate">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Generate</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="generate">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Generate</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Generate page provides direct text generation with more control over parameters:</p>
-            <ol>
+            <ol class="list-decimal list-inside space-y-1">
                 <li>Select a model from the dropdown menu</li>
                 <li>Enter your prompt in the input field</li>
                 <li>Optionally provide a system message</li>
                 <li>Adjust generation parameters (temperature, top_p, etc.)</li>
                 <li>Click "Generate" to create text</li>
             </ol>
-            
-            <h3 class="h6 mt-3">Generation Parameters</h3>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Description</th>
-                            <th>Default</th>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Generation Parameters</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Parameter</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Description</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">Default</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td>Temperature</td>
-                            <td>Controls randomness in outputs. Higher values (e.g., 1.0) increase creativity; lower values (e.g., 0.2) make responses more focused and deterministic.</td>
-                            <td>0.8</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Temperature</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Controls randomness in outputs. Higher values (e.g., 1.0) increase creativity; lower values (e.g., 0.2) make responses more focused and deterministic.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">0.8</td>
                         </tr>
                         <tr>
-                            <td>Top P</td>
-                            <td>Nucleus sampling parameter. Only considers tokens with cumulative probability less than top_p.</td>
-                            <td>0.9</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Top P</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Nucleus sampling parameter. Only considers tokens with cumulative probability less than top_p.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">0.9</td>
                         </tr>
                         <tr>
-                            <td>Top K</td>
-                            <td>Only consider the top k most likely tokens for each step.</td>
-                            <td>40</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Top K</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Only consider the top k most likely tokens for each step.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">40</td>
                         </tr>
                         <tr>
-                            <td>Max Tokens</td>
-                            <td>Maximum number of tokens to generate.</td>
-                            <td>500</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Max Tokens</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Maximum number of tokens to generate.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">500</td>
                         </tr>
                         <tr>
-                            <td>Repeat Penalty</td>
-                            <td>Penalty for repeating tokens. Higher values (e.g., 1.2) reduce repetition.</td>
-                            <td>1.1</td>
+                            <td class="py-2 pr-4 text-neutral-700 dark:text-neutral-300">Repeat Penalty</td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Penalty for repeating tokens. Higher values (e.g., 1.2) reduce repetition.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">1.1</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
-            <h3 class="h6 mt-3">Use Cases for Generate</h3>
-            <ul>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4">Use Cases for Generate</h3>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Creative writing and story completion</li>
                 <li>Code generation with precise control</li>
                 <li>Custom text formatting for specific outputs</li>
                 <li>Testing how parameter changes affect outputs</li>
             </ul>
-            
-            <div class="alert alert-warning">
-                <i class="fas fa-light-bulb me-2"></i> Unlike Chat mode, Generate doesn't maintain conversation history. Each generation is independent.
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-600/20">
+                <i class="fas fa-exclamation-triangle size-4 text-yellow-800 dark:text-yellow-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-yellow-800 dark:text-yellow-300">Unlike Chat mode, Generate doesn't maintain conversation history. Each generation is independent.</span>
             </div>
         </div>
     </div>
 
     <!-- Ollama Version Section -->
-    <div class="card mb-4" id="version">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Ollama Version</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="version">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Ollama Version</h2>
         </div>
-        <div class="card-body">
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300 space-y-3">
             <p>The Version page provides information about your Ollama installation:</p>
-            <ul>
+            <ul class="list-disc list-inside space-y-1">
                 <li>Current installed version</li>
                 <li>Latest available version</li>
                 <li>Update status (whether an update is available)</li>
                 <li>Release notes and changelog for the latest version</li>
             </ul>
-            
             <p>When updates are available, this page provides links to download the latest version for your platform.</p>
-            
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> Keeping Ollama updated ensures you have access to the latest models, features, and performance improvements.
+            <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20 my-4">
+                <i class="fas fa-info-circle size-4 text-blue-800 dark:text-blue-300 mt-[2.5px]"></i>
+                <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-blue-800 dark:text-blue-300">Keeping Ollama updated ensures you have access to the latest models, features, and performance improvements.</span>
             </div>
         </div>
     </div>
 
     <!-- Model Parameters Section -->
-    <div class="card mb-4" id="model-parameters">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Model Parameters</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="model-parameters">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Model Parameters</h2>
         </div>
-        <div class="card-body">
-            <p>Understanding model parameters helps you optimize generation for different use cases:</p>
-            
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Description</th>
-                            <th>When to Adjust</th>
+        <div class="p-6 text-sm text-neutral-700 dark:text-neutral-300">
+            <p class="mb-4">Understanding model parameters helps you optimize generation for different use cases:</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Parameter</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Description</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">When to Adjust</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td>Temperature</td>
-                            <td>Controls randomness and creativity</td>
-                            <td>
-                                <ul>
+                            <td class="py-2 pr-4 align-top text-neutral-700 dark:text-neutral-300">Temperature</td>
+                            <td class="py-2 pr-4 align-top text-neutral-600 dark:text-neutral-400">Controls randomness and creativity</td>
+                            <td class="py-2 align-top text-neutral-600 dark:text-neutral-400">
+                                <ul class="list-disc list-inside space-y-1">
                                     <li>Increase (0.7-1.0) for creative writing, brainstorming</li>
                                     <li>Decrease (0.1-0.5) for factual responses, coding</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
-                            <td>Context Length</td>
-                            <td>How much text the model can "remember"</td>
-                            <td>
-                                <ul>
+                            <td class="py-2 pr-4 align-top text-neutral-700 dark:text-neutral-300">Context Length</td>
+                            <td class="py-2 pr-4 align-top text-neutral-600 dark:text-neutral-400">How much text the model can "remember"</td>
+                            <td class="py-2 align-top text-neutral-600 dark:text-neutral-400">
+                                <ul class="list-disc list-inside space-y-1">
                                     <li>Increase for long conversations or documents</li>
                                     <li>Default is sufficient for most interactions</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
-                            <td>Top P</td>
-                            <td>Controls diversity of word choices</td>
-                            <td>
-                                <ul>
+                            <td class="py-2 pr-4 align-top text-neutral-700 dark:text-neutral-300">Top P</td>
+                            <td class="py-2 pr-4 align-top text-neutral-600 dark:text-neutral-400">Controls diversity of word choices</td>
+                            <td class="py-2 align-top text-neutral-600 dark:text-neutral-400">
+                                <ul class="list-disc list-inside space-y-1">
                                     <li>Lower values (0.5-0.7) for more focused responses</li>
                                     <li>Higher values (0.9-1.0) for more diverse language</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
-                            <td>Top K</td>
-                            <td>Limits vocabulary selection</td>
-                            <td>
-                                <ul>
+                            <td class="py-2 pr-4 align-top text-neutral-700 dark:text-neutral-300">Top K</td>
+                            <td class="py-2 pr-4 align-top text-neutral-600 dark:text-neutral-400">Limits vocabulary selection</td>
+                            <td class="py-2 align-top text-neutral-600 dark:text-neutral-400">
+                                <ul class="list-disc list-inside space-y-1">
                                     <li>Lower values (10-20) for more predictable outputs</li>
                                     <li>Higher values (40-100) for more variety</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
-                            <td>Repeat Penalty</td>
-                            <td>Prevents repetitive text</td>
-                            <td>
-                                <ul>
+                            <td class="py-2 pr-4 align-top text-neutral-700 dark:text-neutral-300">Repeat Penalty</td>
+                            <td class="py-2 pr-4 align-top text-neutral-600 dark:text-neutral-400">Prevents repetitive text</td>
+                            <td class="py-2 align-top text-neutral-600 dark:text-neutral-400">
+                                <ul class="list-disc list-inside space-y-1">
                                     <li>Increase (1.2-1.5) if you notice repetitive phrases</li>
                                     <li>Default (1.1) works well for most cases</li>
                                 </ul>
@@ -466,219 +449,186 @@
     </div>
 
     <!-- Troubleshooting Section -->
-    <div class="card mb-4" id="troubleshooting">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Troubleshooting</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="troubleshooting">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Troubleshooting</h2>
         </div>
-        <div class="card-body">
-            <h3 class="h6">Common Issues and Solutions</h3>
-            
-            <div class="accordion" id="troubleshootingAccordion">
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue1">
-                            Cannot connect to Ollama API
-                        </button>
-                    </h4>
-                    <div id="issue1" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
-                        <div class="accordion-body">
-                            <p>If WebOllama cannot connect to the Ollama API:</p>
-                            <ol>
-                                <li>Verify that Ollama is running (check task manager or process list)</li>
-                                <li>Ensure Ollama is running on the expected port (default: 11434)</li>
-                                <li>Check if any firewall is blocking connections</li>
-                                <li>Restart Ollama service</li>
-                            </ol>
-                        </div>
+        <div class="p-6">
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-4">Common Issues and Solutions</h3>
+            <div class="space-y-2">
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        Cannot connect to Ollama API
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>If WebOllama cannot connect to the Ollama API:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Verify that Ollama is running (check task manager or process list)</li>
+                            <li>Ensure Ollama is running on the expected port (default: 11434)</li>
+                            <li>Check if any firewall is blocking connections</li>
+                            <li>Restart Ollama service</li>
+                        </ol>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue2">
-                            Model download fails or times out
-                        </button>
-                    </h4>
-                    <div id="issue2" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
-                        <div class="accordion-body">
-                            <p>If you experience issues downloading models:</p>
-                            <ol>
-                                <li>Check your internet connection</li>
-                                <li>Verify you have sufficient disk space</li>
-                                <li>Try downloading a smaller model first</li>
-                                <li>If using a VPN, try disabling it temporarily</li>
-                                <li>Restart Ollama and try again</li>
-                            </ol>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        Model download fails or times out
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>If you experience issues downloading models:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Check your internet connection</li>
+                            <li>Verify you have sufficient disk space</li>
+                            <li>Try downloading a smaller model first</li>
+                            <li>If using a VPN, try disabling it temporarily</li>
+                            <li>Restart Ollama and try again</li>
+                        </ol>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue3">
-                            Model generates poor or unexpected responses
-                        </button>
-                    </h4>
-                    <div id="issue3" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
-                        <div class="accordion-body">
-                            <p>If the model isn't generating good responses:</p>
-                            <ol>
-                                <li>Try a different model (some models are better at certain tasks)</li>
-                                <li>Be more specific and detailed in your prompts</li>
-                                <li>Adjust the temperature (lower for more focused responses)</li>
-                                <li>Create a custom model with a system prompt tailored to your needs</li>
-                                <li>Consider the model's limitations (smaller models have less capability)</li>
-                            </ol>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        Model generates poor or unexpected responses
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>If the model isn't generating good responses:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Try a different model (some models are better at certain tasks)</li>
+                            <li>Be more specific and detailed in your prompts</li>
+                            <li>Adjust the temperature (lower for more focused responses)</li>
+                            <li>Create a custom model with a system prompt tailored to your needs</li>
+                            <li>Consider the model's limitations (smaller models have less capability)</li>
+                        </ol>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue4">
-                            System resource usage is too high
-                        </button>
-                    </h4>
-                    <div id="issue4" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
-                        <div class="accordion-body">
-                            <p>If Ollama is using too much memory or CPU:</p>
-                            <ol>
-                                <li>Unload models that aren't in use (via the Running Models page)</li>
-                                <li>Use smaller models (7B instead of 13B or larger)</li>
-                                <li>Try more quantized models (Q4 instead of Q8)</li>
-                                <li>Reduce the context length when creating custom models</li>
-                                <li>Close other resource-intensive applications while using Ollama</li>
-                            </ol>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        System resource usage is too high
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>If Ollama is using too much memory or CPU:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Unload models that aren't in use (via the Running Models page)</li>
+                            <li>Use smaller models (7B instead of 13B or larger)</li>
+                            <li>Try more quantized models (Q4 instead of Q8)</li>
+                            <li>Reduce the context length when creating custom models</li>
+                            <li>Close other resource-intensive applications while using Ollama</li>
+                        </ol>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue5">
-                            Model generates very slowly
-                        </button>
-                    </h4>
-                    <div id="issue5" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
-                        <div class="accordion-body">
-                            <p>If text generation is too slow:</p>
-                            <ol>
-                                <li>Use a smaller, more efficient model</li>
-                                <li>Try a more quantized version of the model</li>
-                                <li>If you have a compatible GPU, ensure GPU acceleration is enabled</li>
-                                <li>Close other applications consuming GPU resources</li>
-                                <li>Reduce the context window size when creating custom models</li>
-                            </ol>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        Model generates very slowly
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>If text generation is too slow:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Use a smaller, more efficient model</li>
+                            <li>Try a more quantized version of the model</li>
+                            <li>If you have a compatible GPU, ensure GPU acceleration is enabled</li>
+                            <li>Close other applications consuming GPU resources</li>
+                            <li>Reduce the context window size when creating custom models</li>
+                        </ol>
                     </div>
-                </div>
+                </details>
             </div>
         </div>
     </div>
 
     <!-- FAQ Section -->
-    <div class="card mb-4" id="faq">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Frequently Asked Questions</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4" id="faq">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Frequently Asked Questions</h2>
         </div>
-        <div class="card-body">
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            What hardware do I need to run Ollama models?
-                        </button>
-                    </h4>
-                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>Minimum requirements depend on the model size:</p>
-                            <ul>
-                                <li>For smaller models (7B): 8GB RAM, modern CPU</li>
-                                <li>For medium models (13B): 16GB RAM, modern CPU</li>
-                                <li>For larger models (70B): 32GB+ RAM or compatible GPU</li>
-                            </ul>
-                            <p>GPU acceleration significantly improves performance if you have a compatible NVIDIA, AMD, or Apple Silicon GPU.</p>
-                        </div>
+        <div class="p-6">
+            <div class="space-y-2">
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        What hardware do I need to run Ollama models?
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>Minimum requirements depend on the model size:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>For smaller models (7B): 8GB RAM, modern CPU</li>
+                            <li>For medium models (13B): 16GB RAM, modern CPU</li>
+                            <li>For larger models (70B): 32GB+ RAM or compatible GPU</li>
+                        </ul>
+                        <p>GPU acceleration significantly improves performance if you have a compatible NVIDIA, AMD, or Apple Silicon GPU.</p>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            Is my data sent to external servers?
-                        </button>
-                    </h4>
-                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>No. Ollama runs models locally on your machine. Your prompts, conversations, and generated content stay on your device and are not sent to external servers (except when downloading models).</p>
-                            <p>This makes Ollama ideal for privacy-sensitive applications where data cannot leave your environment.</p>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        Is my data sent to external servers?
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>No. Ollama runs models locally on your machine. Your prompts, conversations, and generated content stay on your device and are not sent to external servers (except when downloading models).</p>
+                        <p>This makes Ollama ideal for privacy-sensitive applications where data cannot leave your environment.</p>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            How do I update my models to the latest versions?
-                        </button>
-                    </h4>
-                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>You can update models in two ways:</p>
-                            <ol>
-                                <li>On the Models page, click the refresh/sync icon (<i class="fas fa-sync-alt"></i>) next to the model you want to update</li>
-                                <li>Alternatively, you can pull the model again with the same name from the Pull Model page</li>
-                            </ol>
-                            <p>Ollama will automatically download only the updated parts of the model, saving bandwidth compared to a full re-download.</p>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        How do I update my models to the latest versions?
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>You can update models in two ways:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>On the Models page, click the refresh/sync icon (<i class="fas fa-sync-alt"></i>) next to the model you want to update</li>
+                            <li>Alternatively, you can pull the model again with the same name from the Pull Model page</li>
+                        </ol>
+                        <p>Ollama will automatically download only the updated parts of the model, saving bandwidth compared to a full re-download.</p>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            What's the difference between Chat and Generate?
-                        </button>
-                    </h4>
-                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p><strong>Chat</strong> provides a conversational interface where:</p>
-                            <ul>
-                                <li>The model remembers the conversation history</li>
-                                <li>Messages are presented in a back-and-forth format</li>
-                                <li>The interface is optimized for dialogue</li>
-                            </ul>
-                            
-                            <p><strong>Generate</strong> provides a direct prompt-to-text interface where:</p>
-                            <ul>
-                                <li>Each generation is independent (no conversation history)</li>
-                                <li>You have more control over generation parameters</li>
-                                <li>The interface is optimized for one-time text generation</li>
-                            </ul>
-                            
-                            <p>Use Chat for ongoing conversations and Generate for specific text creation tasks with detailed parameter control.</p>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        What's the difference between Chat and Generate?
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p><strong>Chat</strong> provides a conversational interface where:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>The model remembers the conversation history</li>
+                            <li>Messages are presented in a back-and-forth format</li>
+                            <li>The interface is optimized for dialogue</li>
+                        </ul>
+                        <p><strong>Generate</strong> provides a direct prompt-to-text interface where:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Each generation is independent (no conversation history)</li>
+                            <li>You have more control over generation parameters</li>
+                            <li>The interface is optimized for one-time text generation</li>
+                        </ul>
+                        <p>Use Chat for ongoing conversations and Generate for specific text creation tasks with detailed parameter control.</p>
                     </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h4 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                            How do I free up disk space used by models?
-                        </button>
-                    </h4>
-                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>To free up disk space, you can delete models you no longer need:</p>
-                            <ol>
-                                <li>Go to the Models page</li>
-                                <li>Click the trash icon (<i class="fas fa-trash"></i>) next to the model you want to remove</li>
-                                <li>Confirm the deletion when prompted</li>
-                            </ol>
-                            <p>This will permanently delete the model from your system. You can always re-download it later if needed.</p>
-                        </div>
+                </details>
+
+                <details class="rounded-lg border border-neutral-200 dark:border-neutral-700 group">
+                    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+                        How do I free up disk space used by models?
+                        <i class="fas fa-chevron-down text-neutral-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
+                        <p>To free up disk space, you can delete models you no longer need:</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Go to the Models page</li>
+                            <li>Click the trash icon (<i class="fas fa-trash"></i>) next to the model you want to remove</li>
+                            <li>Confirm the deletion when prompted</li>
+                        </ol>
+                        <p>This will permanently delete the model from your system. You can always re-download it later if needed.</p>
                     </div>
-                </div>
+                </details>
             </div>
         </div>
     </div>

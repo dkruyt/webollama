@@ -3,19 +3,17 @@
 {% block title %}Webollama - Model Creation Help{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="mb-4">
-        <h1>Model Creation Help</h1>
-        <p class="text-muted">Guide to creating custom models with Ollama</p>
+<div class="p-6 sm:p-8 mx-auto h-full sm:w-screen max-w-5xl overflow-y-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl font-semibold text-neutral-900 dark:text-white">Model Creation Help</h1>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Guide to creating custom models with Ollama</p>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="h5 mb-3">Overview</h2>
-            <p>
-                Ollama allows you to create custom models by:
-            </p>
-            <ul>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="p-6">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Overview</h2>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">Ollama allows you to create custom models by:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm text-neutral-700 dark:text-neutral-300">
                 <li>Customizing an existing model with system prompts and parameters</li>
                 <li>Quantizing a model to reduce memory usage</li>
                 <li>Importing from GGUF files or Safetensors directories</li>
@@ -24,75 +22,74 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Creating From Existing Models</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Creating From Existing Models</h2>
         </div>
-        <div class="card-body">
-            <p>The simplest way to create a custom model is to base it on an existing model with some modifications.</p>
-            
-            <h3 class="h6 mt-3">System Prompt</h3>
-            <p>A system prompt defines the behavior and characteristics of the model. For example:</p>
-            <pre class="bg-light p-3 rounded">You are Mario from Super Mario Bros, acting as an assistant.</pre>
-            
-            <h3 class="h6 mt-3">Template</h3>
-            <p>Templates use Go template syntax to define how prompts are formatted. Available variables:</p>
-            <ul>
-                <li><code>{{ "{{ .System }}" }}</code> - The system message</li>
-                <li><code>{{ "{{ .Prompt }}" }}</code> - The user prompt</li>
-                <li><code>{{ "{{ .Response }}" }}</code> - The assistant's response</li>
+        <div class="p-6">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-4">The simplest way to create a custom model is to base it on an existing model with some modifications.</p>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4 mb-2">System Prompt</h3>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">A system prompt defines the behavior and characteristics of the model. For example:</p>
+            <pre class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded p-3 text-sm font-mono text-neutral-800 dark:text-neutral-200 overflow-x-auto">You are Mario from Super Mario Bros, acting as an assistant.</pre>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4 mb-2">Template</h3>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">Templates use Go template syntax to define how prompts are formatted. Available variables:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm text-neutral-700 dark:text-neutral-300 mb-2">
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{{ "{{ .System }}" }}</code> - The system message</li>
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{{ "{{ .Prompt }}" }}</code> - The user prompt</li>
+                <li><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{{ "{{ .Response }}" }}</code> - The assistant's response</li>
             </ul>
-            <p>Example template for Llama 3 models:</p>
-            <pre class="bg-light p-3 rounded">{{ '"""{{ if .System }}<|start_header_id|>system<|end_header_id|>\n\n{{ .System }}<|eot_id|>{{ end }}{{ if .Prompt }}<|start_header_id|>user<|end_header_id|>\n\n{{ .Prompt }}<|eot_id|>{{ end }}<|start_header_id|>assistant<|end_header_id|>\n\n{{ .Response }}<|eot_id|>"""' }}</pre>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">Example template for Llama 3 models:</p>
+            <pre class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded p-3 text-sm font-mono text-neutral-800 dark:text-neutral-200 overflow-x-auto">{{ '"""{{ if .System }}<|start_header_id|>system<|end_header_id|>\n\n{{ .System }}<|eot_id|>{{ end }}{{ if .Prompt }}<|start_header_id|>user<|end_header_id|>\n\n{{ .Prompt }}<|eot_id|>{{ end }}<|start_header_id|>assistant<|end_header_id|>\n\n{{ .Response }}<|eot_id|>"""' }}</pre>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Model Parameters</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Model Parameters</h2>
         </div>
-        <div class="card-body">
-            <p>Parameters control how the model processes and generates text:</p>
-            
-            <div class="table-responsive">
-                <table class="table table-sm">
+        <div class="p-6">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-4">Parameters control how the model processes and generates text:</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
                     <thead>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Description</th>
-                            <th>Default</th>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Parameter</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Description</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">Default</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td><code>temperature</code></td>
-                            <td>Controls randomness. Higher values (e.g., 1.0) make output more creative, lower values (e.g., 0.1) make it more focused and deterministic.</td>
-                            <td>0.8</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">temperature</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Controls randomness. Higher values (e.g., 1.0) make output more creative, lower values (e.g., 0.1) make it more focused and deterministic.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">0.8</td>
                         </tr>
                         <tr>
-                            <td><code>num_ctx</code></td>
-                            <td>Size of the context window (in tokens). Larger values allow the model to "remember" more of the conversation but use more memory.</td>
-                            <td>2048</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">num_ctx</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Size of the context window (in tokens). Larger values allow the model to "remember" more of the conversation but use more memory.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">2048</td>
                         </tr>
                         <tr>
-                            <td><code>top_p</code></td>
-                            <td>Nucleus sampling. Controls diversity by limiting to tokens comprising the top_p probability mass.</td>
-                            <td>0.9</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">top_p</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Nucleus sampling. Controls diversity by limiting to tokens comprising the top_p probability mass.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">0.9</td>
                         </tr>
                         <tr>
-                            <td><code>top_k</code></td>
-                            <td>Limits the model's token selection to the top k most likely tokens.</td>
-                            <td>40</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">top_k</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Limits the model's token selection to the top k most likely tokens.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">40</td>
                         </tr>
                         <tr>
-                            <td><code>repeat_penalty</code></td>
-                            <td>How strongly to penalize repetitions.</td>
-                            <td>1.1</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">repeat_penalty</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">How strongly to penalize repetitions.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">1.1</td>
                         </tr>
                         <tr>
-                            <td><code>seed</code></td>
-                            <td>Random seed for reproducible outputs. Set to a specific number for deterministic results.</td>
-                            <td>0</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">seed</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">Random seed for reproducible outputs. Set to a specific number for deterministic results.</td>
+                            <td class="py-2 text-neutral-600 dark:text-neutral-400">0</td>
                         </tr>
                     </tbody>
                 </table>
@@ -100,42 +97,41 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Quantization Options</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Quantization Options</h2>
         </div>
-        <div class="card-body">
-            <p>Quantization reduces model size and memory requirements at the cost of some accuracy:</p>
-            
-            <div class="table-responsive">
-                <table class="table table-sm">
+        <div class="p-6">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-4">Quantization reduces model size and memory requirements at the cost of some accuracy:</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm border-collapse">
                     <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Recommended</th>
+                        <tr class="border-b border-neutral-200 dark:border-neutral-700">
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Type</th>
+                            <th class="text-left py-2 pr-4 font-medium text-neutral-900 dark:text-white">Description</th>
+                            <th class="text-left py-2 font-medium text-neutral-900 dark:text-white">Recommended</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                         <tr>
-                            <td><code>q4_K_M</code></td>
-                            <td>4-bit quantization, good balance of quality and size</td>
-                            <td>✓</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">q4_K_M</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">4-bit quantization, good balance of quality and size</td>
+                            <td class="py-2 text-green-600 dark:text-green-400">✓</td>
                         </tr>
                         <tr>
-                            <td><code>q8_0</code></td>
-                            <td>8-bit quantization, better quality but larger size</td>
-                            <td>✓</td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">q8_0</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">8-bit quantization, better quality but larger size</td>
+                            <td class="py-2 text-green-600 dark:text-green-400">✓</td>
                         </tr>
                         <tr>
-                            <td><code>q5_K_M</code></td>
-                            <td>5-bit quantization</td>
-                            <td></td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">q5_K_M</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">5-bit quantization</td>
+                            <td class="py-2 text-neutral-400"></td>
                         </tr>
                         <tr>
-                            <td><code>q3_K_M</code></td>
-                            <td>3-bit quantization, smaller file size but reduced quality</td>
-                            <td></td>
+                            <td class="py-2 pr-4"><code class="font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">q3_K_M</code></td>
+                            <td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">3-bit quantization, smaller file size but reduced quality</td>
+                            <td class="py-2 text-neutral-400"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,48 +139,50 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Using GGUF Files and Safetensors</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Using GGUF Files and Safetensors</h2>
         </div>
-        <div class="card-body">
-            <p>
+        <div class="p-6">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-4">
                 You can create models from pre-existing GGUF files or Safetensors directories. This requires first uploading the files to the Ollama server.
             </p>
-            
-            <h3 class="h6 mt-3">GGUF Files</h3>
-            <p>GGUF is a format for storing quantized large language models.</p>
-            <p><strong>Example using the Ollama CLI:</strong></p>
-            <pre class="bg-light p-3 rounded">ollama create my-model -f ./path/to/model.gguf</pre>
-            
-            <h3 class="h6 mt-3">Safetensors Directories</h3>
-            <p>Safetensors is a safe and efficient format for storing model weights.</p>
-            <p>The directory should contain the Safetensors weights for a supported architecture (Llama, Mistral, Gemma, Phi3).</p>
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-2 mb-2">GGUF Files</h3>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">GGUF is a format for storing quantized large language models.</p>
+            <p class="text-sm font-medium text-neutral-900 dark:text-white mb-1">Example using the Ollama CLI:</p>
+            <pre class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded p-3 text-sm font-mono text-neutral-800 dark:text-neutral-200 overflow-x-auto">ollama create my-model -f ./path/to/model.gguf</pre>
+
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mt-4 mb-2">Safetensors Directories</h3>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-2">Safetensors is a safe and efficient format for storing model weights.</p>
+            <p class="text-sm text-neutral-700 dark:text-neutral-300">The directory should contain the Safetensors weights for a supported architecture (Llama, Mistral, Gemma, Phi3).</p>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Model Examples</h2>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-4">
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">Model Examples</h2>
         </div>
-        <div class="card-body">
-            <h3 class="h6">Mario Assistant Example</h3>
-            <pre class="bg-light p-3 rounded">FROM llama3.2
+        <div class="p-6 space-y-4">
+            <div>
+                <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Mario Assistant Example</h3>
+                <pre class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded p-3 text-sm font-mono text-neutral-800 dark:text-neutral-200 overflow-x-auto">FROM llama3.2
 PARAMETER temperature 1
 PARAMETER num_ctx 4096
 SYSTEM You are Mario from Super Mario Bros, acting as an assistant.</pre>
-
-            <h3 class="h6 mt-3">Pirate Example</h3>
-            <pre class="bg-light p-3 rounded">FROM llama3.2
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Pirate Example</h3>
+                <pre class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded p-3 text-sm font-mono text-neutral-800 dark:text-neutral-200 overflow-x-auto">FROM llama3.2
 PARAMETER temperature 0.7
 PARAMETER num_ctx 4096
 SYSTEM You are a pirate and you answer all questions with pirate-speak, using pirate phrases like "Arr matey", "shiver me timbers", etc.</pre>
+            </div>
         </div>
     </div>
 
-    <div class="text-end mb-4">
-        <a href="/create" class="btn btn-primary">
-            <i class="fas fa-arrow-left me-2"></i> Back to Create Model
+    <div class="flex justify-end mb-4">
+        <a href="/create" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Create Model
         </a>
     </div>
 </div>

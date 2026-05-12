@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="750"
+   height="750"
+   viewBox="0 0 750 750"
+   sodipodi:docname="IBM granite 2 cubes logo.svg"
+   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient2"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#006116;stop-opacity:1;"
+         offset="0"
+         id="stop2" />
+      <stop
+         style="stop-color:#00ab23;stop-opacity:1;"
+         offset="1"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2"
+       id="linearGradient3"
+       x1="490.78799"
+       y1="32.702923"
+       x2="491.20642"
+       y2="463.43018"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99850638,0,0,0.98800358,0,9.1191318)" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.34755479"
+     inkscape:cx="494.886"
+     inkscape:cy="217.23194"
+     inkscape:window-width="1366"
+     inkscape:window-height="682"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <g
+       id="g7"
+       transform="translate(-396.72488,-43.888303)"
+       inkscape:label="g7">
+      <rect
+         style="fill:url(#linearGradient3);stroke:none;stroke-width:19.3473;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect1"
+         width="344.86151"
+         height="441.62872"
+         x="478.99133"
+         y="30.126156"
+         transform="matrix(0.93672659,0.35006185,0,1,0,0)" />
+      <rect
+         style="fill:#00e464;fill-opacity:1;stroke-width:43.8058;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect2-1"
+         width="344.802"
+         height="344.802"
+         x="-675.23218"
+         y="1154.1407"
+         transform="matrix(0.93688829,-0.34962886,0.93688829,0.34962886,0,0)" />
+      <rect
+         style="opacity:0.523651;fill:#6ee099;fill-opacity:1;stroke-width:19.3473;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect1-3"
+         width="344.86151"
+         height="441.62872"
+         x="-1168.7145"
+         y="606.92505"
+         transform="matrix(-0.93672659,0.35006185,0,1,0,0)" />
+      <rect
+         style="fill:#6ee099;fill-opacity:1;stroke-width:43.8058;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect2"
+         width="344.802"
+         height="344.802"
+         x="-43.953358"
+         y="522.862"
+         transform="matrix(0.93688829,-0.34962886,0.93688829,0.34962886,0,0)" />
+      <rect
+         style="opacity:0.65;fill:#0c9fa6;fill-opacity:1;stroke:none;stroke-width:13.1517;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect1-0"
+         width="234.42734"
+         height="300.20703"
+         x="654.20148"
+         y="-15.097324"
+         transform="matrix(0.93672659,0.35006185,0,1,0,0)" />
+      <rect
+         style="opacity:0.65;fill:#000fff;fill-opacity:1;stroke-width:29.778;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect2-1-6"
+         width="234.3869"
+         height="234.3869"
+         x="-408.35889"
+         y="1062.4473"
+         transform="matrix(0.93688829,-0.34962886,0.93688829,0.34962886,0,0)" />
+      <rect
+         style="opacity:0.340373;fill:#0c9fa6;fill-opacity:1;stroke-width:13.1517;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect1-3-2"
+         width="234.42734"
+         height="300.20703"
+         x="-1123.0564"
+         y="607.0528"
+         transform="matrix(-0.93672659,0.35006185,0,1,0,0)" />
+      <rect
+         style="display:inline;opacity:0.65;fill:#f7fdf9;fill-opacity:1;stroke-width:29.778;stroke-linecap:square;paint-order:stroke fill markers"
+         id="rect2-6"
+         width="234.3869"
+         height="234.3869"
+         x="20.767092"
+         y="633.32159"
+         transform="matrix(0.93688829,-0.34962886,0.93688829,0.34962886,0,0)" />
+    </g>
+  </g>
+</svg>

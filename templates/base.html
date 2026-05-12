@@ -1,115 +1,238 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full overflow-y-scroll">
+<html lang="en" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{% block title %}Webollama{% endblock %}</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/style.css">
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="https://ollama.com/public/icon-32x32.png" />
-    {% block extra_css %}{% endblock %}
+    <link rel="icon" type="image/png" sizes="32x32" href="https://ollama.com/public/icon-32x32.png" /> {% block extra_css %}{% endblock %}
+    <script>
+        (function () {
+            var saved = localStorage.getItem('darkMode');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'true' || (saved === null && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @custom-variant dark (&:where(.dark, .dark *));
+        @layer components {
+            .dark { color-scheme: dark; }
+        }
+        html { color-scheme: light; }
+        html.dark { color-scheme: dark; }
+        @media (max-width: 767px) {
+            #mainSidebar {
+                display: flex !important;
+                flex-direction: column;
+                position: fixed;
+                top: 4rem;
+                left: 0;
+                width: 100%;
+                z-index: 40;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+            }
+            #mainSidebar.mobile-open {
+                max-height: 100vh;
+            }
+        }
+        dialog {
+            position: fixed;
+            inset: 0;
+            margin: auto;
+            height: fit-content;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="https://ollama.com/public/ollama.png" alt="Ollama" height="28">
-                <span class="ms-2">WebOllama</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+<body class="bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 min-h-screen overflow-x-hidden">
+    <nav class="sticky top-0 z-50 flex items-center h-16 px-7 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]">
+        <a class="flex h-full items-center font-semibold text-xl text-neutral-900 dark:text-white no-underline" href="/">
+            <img src="https://ollama.com/public/ollama.png" alt="Ollama" class="h-7 w-auto dark:invert">
+            <span class="ml-2">WebOllama</span>
+        </a>
+        <div class="flex items-center ml-auto gap-4">
+            <button
+                class="relative flex lg:h-7 h-[2.375rem] justify-between lg:w-[3.25rem] w-[4.5rem] items-center p-1 rounded-full border border-neutral-200/70 dark:border-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700"
+                aria-label="Toggle dark mode"
+                id="darkModeToggle">
+                <div class="z-10 flex w-full items-center justify-between lg:px-1 px-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg" class="lg:size-3 size-3.5 text-neutral-600 dark:text-neutral-600">
+                        <g clip-path="url(#clip0_2880_7340)">
+                            <path d="M8 1.11133V2.00022" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12.8711 3.12891L12.2427 3.75735" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M14.8889 8H14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12.8711 12.8711L12.2427 12.2427" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M8 14.8889V14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M3.12891 12.8711L3.75735 12.2427" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M1.11133 8H2.00022" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M3.12891 3.12891L3.75735 3.75735" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M8.00043 11.7782C10.0868 11.7782 11.7782 10.0868 11.7782 8.00043C11.7782 5.91402 10.0868 4.22266 8.00043 4.22266C5.91402 4.22266 4.22266 5.91402 4.22266 8.00043C4.22266 10.0868 5.91402 11.7782 8.00043 11.7782Z"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_2880_7340">
+                                <rect width="16" height="16" fill="white"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg"
+                        class="lg:size-3 size-3.5 text-neutral-400 dark:text-neutral-400 translate-x-[0.5px]">
+                        <g clip-path="url(#clip0_2880_7355)">
+                            <path
+                                d="M11.5556 10.4445C8.48717 10.4445 6.00005 7.95743 6.00005 4.88899C6.00005 3.68721 6.38494 2.57877 7.03294 1.66943C4.04272 2.22766 1.77783 4.84721 1.77783 8.0001C1.77783 11.5592 4.66317 14.4445 8.22228 14.4445C11.2196 14.4445 13.7316 12.3948 14.4525 9.62321C13.6081 10.1414 12.6187 10.4445 11.5556 10.4445Z"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_2880_7355">
+                                <rect width="16" height="16" fill="white"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg></div>
+                <div class="toggle-indicator absolute left-1 lg:size-5 size-[1.875rem] rounded-full bg-neutral-200/50 dark:bg-neutral-900">
+                </div>
+            </button>
+            <button id="navToggler" type="button" class="md:hidden p-2 rounded-md text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 focus:outline-none"
+                aria-label="Toggle sidebar">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if '/about' in request.path %}active{% endif %}" href="/about">
-                            <i class="fas fa-info-circle me-1"></i> About
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
-
-    <div class="container-fluid p-0">
-        <div class="row g-0">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <div class="list-group">
-                    <a href="/" class="list-group-item list-group-item-action {% if request.path == '/' %}active{% endif %}">
-                        <i class="fas fa-home me-2"></i> Home
-                    </a>
-                    <a href="/models" class="list-group-item list-group-item-action {% if '/models' in request.path and '/models/' not in request.path %}active{% endif %}">
-                        <i class="fas fa-cubes me-2"></i> Models
-                    </a>
-                    <a href="/running-models" class="list-group-item list-group-item-action {% if '/running-models' in request.path %}active{% endif %}">
-                        <i class="fas fa-server me-2"></i> Running Models
-                    </a>
-                    <a href="/pull" class="list-group-item list-group-item-action {% if '/pull' in request.path %}active{% endif %}">
-                        <i class="fas fa-download me-2"></i> Pull Model
-                    </a>
-                    <a href="/create" class="list-group-item list-group-item-action {% if '/create' in request.path %}active{% endif %}">
-                        <i class="fas fa-plus-circle me-2"></i> Create Model
-                    </a>
-                    <a href="/chat" class="list-group-item list-group-item-action {% if '/chat' in request.path %}active{% endif %}">
-                        <i class="fas fa-comments me-2"></i> Chat
-                    </a>
-                    <a href="/generate" class="list-group-item list-group-item-action {% if '/generate' in request.path %}active{% endif %}">
-                        <i class="fas fa-magic me-2"></i> Generate
-                    </a>
-                    <a href="/version" class="list-group-item list-group-item-action {% if '/version' in request.path %}active{% endif %}">
-                        <i class="fas fa-code-branch me-2"></i> Ollama Version
-                    </a>
-                    <a href="/help" class="list-group-item list-group-item-action {% if '/help' in request.path %}active{% endif %}">
-                        <i class="fas fa-question-circle me-2"></i> Help & Documentation
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Main Content -->
-            <div class="col-md-10 content-wrapper">
-                <div class="content fade-in">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                
-                {% block content %}{% endblock %}
-                </div>
-            </div>
-        </div>
+    <div class="flex h-[calc(100vh-4rem)] overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="mainSidebar"
+            class="hidden md:flex flex-col w-48 shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
+            <nav class="flex flex-col gap-1 px-2 py-4">
+                <a href="/"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if request.path == '/' %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-home mr-2 w-5 text-center text-sm opacity-75"></i> Home </a>
+                <a href="/models"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/models' in request.path and '/models/' not in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-cubes mr-2 w-5 text-center text-sm opacity-75"></i> Models </a>
+                <a href="/running-models"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/running-models' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-server mr-2 w-5 text-center text-sm opacity-75"></i> Running Models </a>
+                <a href="/pull"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/pull' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-download mr-2 w-5 text-center text-sm opacity-75"></i> Pull Model </a>
+                <a href="/create"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/create' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-plus-circle mr-2 w-5 text-center text-sm opacity-75"></i> Create Model </a>
+                <a href="/chat"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/chat' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-comments mr-2 w-5 text-center text-sm opacity-75"></i> Chat </a>
+                <a href="/generate"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/generate' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-magic mr-2 w-5 text-center text-sm opacity-75"></i> Generate </a>
+                <a href="/version"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/version' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-code-branch mr-2 w-5 text-center text-sm opacity-75"></i> Ollama Version </a>
+                <a href="/help"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/help' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-question-circle mr-2 w-5 text-center text-sm opacity-75"></i> Help & Documentation </a>
+                <a href="/about"
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline {% if '/about' in request.path %}bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white font-semibold{% else %}text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white{% endif %}">
+                    <i class="fas fa-info-circle mr-2 w-5 text-center text-sm opacity-75"></i> About </a>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 overflow-hidden flex flex-col">
+            <div class="fade-in flex-1 flex flex-col min-h-0"> {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %} <div class="flex items-center justify-between gap-4 px-4 py-3 mb-4 rounded-md border text-sm
+                            {% if category == 'success' %}bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300
+                            {% elif category == 'danger' %}bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300
+                            {% elif category == 'warning' %}bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300
+                            {% elif category == 'info' %}bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300
+                            {% else %}bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200{% endif %}" role="alert">
+                    <span>{{ message }}</span>
+                    <button type="button" class="shrink-0 opacity-50 hover:opacity-100 focus:outline-none transition-opacity" onclick="this.parentElement.remove()" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div> {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %} </div>
+        </main>
     </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block modals %}{% endblock %}
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Mobile sidebar toggle
-        const toggler = document.querySelector('.navbar-toggler');
-        const sidebar = document.querySelector('.sidebar');
-        
-        if (toggler && sidebar) {
-            toggler.addEventListener('click', function() {
-                sidebar.classList.toggle('show');
-            });
+        /**
+         * linkifyUrls — walks text nodes inside `container` and wraps bare URLs
+         * in <a class="auto-link"> tags. Skips elements that already contain an
+         * anchor, code blocks, scripts and style elements.
+         */
+        function linkifyUrls(container) {
+            const urlPattern = /https?:\/\/[^\s<>"']+[^\s<>"'.,;:!?()\]]/g;
+            const SKIP = new Set(['A', 'SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA']);
+
+            function walk(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    urlPattern.lastIndex = 0;
+                    const text = node.textContent;
+                    if (!urlPattern.test(text)) return;
+                    urlPattern.lastIndex = 0;
+
+                    const frag = document.createDocumentFragment();
+                    let lastIndex = 0, match;
+                    while ((match = urlPattern.exec(text)) !== null) {
+                        if (match.index > lastIndex) {
+                            frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+                        }
+                        const a = document.createElement('a');
+                        a.href = match[0];
+                        a.textContent = match[0];
+                        a.className = 'auto-link';
+                        a.target = '_blank';
+                        a.rel = 'noopener noreferrer';
+                        frag.appendChild(a);
+                        lastIndex = match.index + match[0].length;
+                    }
+                    if (lastIndex < text.length) {
+                        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+                    }
+                    node.parentNode.replaceChild(frag, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE && !SKIP.has(node.tagName)) {
+                    Array.from(node.childNodes).forEach(walk);
+                }
+            }
+
+            Array.from(container.childNodes).forEach(walk);
         }
-    });
-    </script>
-    {% block extra_js %}{% endblock %}
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile sidebar toggle
+            const toggler = document.getElementById('navToggler');
+            const sidebar = document.getElementById('mainSidebar');
+
+            if (toggler && sidebar) {
+                toggler.addEventListener('click', function () {
+                    sidebar.classList.toggle('mobile-open');
+                });
+            }
+
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', function () {
+                    var isDark = document.documentElement.classList.toggle('dark');
+                    localStorage.setItem('darkMode', isDark);
+                });
+            }
+        });
+    </script> {% block extra_js %}{% endblock %}
 </body>
+
 </html>

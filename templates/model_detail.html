@@ -4,190 +4,140 @@
 
 {% block extra_css %}
 <style>
-    #deleteConfirmModal {
-        z-index: 2000 !important;
-        position: absolute !important;
-    }
-    .modal-backdrop {
-        display: none !important;
-    }
-    
-    /* Ensure the modal content is visible */
-    .modal-content {
-        box-shadow: 0 5px 15px rgba(0,0,0,.5);
-        background-color: #fff;
-    }
+    #deleteConfirmModal { border: none; padding: 0; width: 100%; max-width: 500px; color: inherit; }
 </style>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Handle delete button click
-        const deleteBtn = document.getElementById('deleteModelBtn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
-                const modelName = this.getAttribute('data-model-name');
-                
-                // Set the model name in the modal
-                const modelNameEl = document.getElementById('modelNameToDelete');
-                if (modelNameEl) {
-                    modelNameEl.textContent = modelName;
-                }
-                
-                // Set the form action
-                const formEl = document.getElementById('deleteModelForm');
-                if (formEl) {
-                    formEl.action = '/models/delete/' + encodeURIComponent(modelName);
-                }
-                
-                // Show the modal
-                const modalEl = document.getElementById('deleteConfirmModal');
-                if (modalEl) {
-                    // Create modal with options for Bootstrap 5
-                    const deleteModal = new bootstrap.Modal(modalEl, {
-                        backdrop: false
-                    });
-                    deleteModal.show();
-                }
-            });
-        }
-    });
-</script>
+{% block content %}
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+    <nav class="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-6" aria-label="breadcrumb">
+        <a href="/models" class="hover:text-neutral-900 dark:hover:text-white">Models</a>
+        <span>/</span>
+        <span class="text-neutral-900 dark:text-white">{{ model_name }}</span>
+    </nav>
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 shadow-sm mb-6">
+
+        <div class="hidden lg:flex flex-row items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+            <h2 class="text-xl font-semibold text-neutral-900 dark:text-white">{{ model_name }}</h2>
+            <div class="flex gap-2">
+                <a href="/chat?model={{ model_name }}" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-comments mr-2"></i> Chat
+                </a>
+                <a href="/generate?model={{ model_name }}" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-magic mr-2"></i> Generate
+                </a>
+                <button type="button" onclick="document.getElementById('deleteConfirmModal').showModal()" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i> Delete
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:hidden flex flex-col items-start justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 my-auto">
+            <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">{{ model_name }}</h2>
+            <div class="flex gap-2">
+                <a href="/chat?model={{ model_name }}" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-comments mr-2"></i> Chat
+                </a>
+                <a href="/generate?model={{ model_name }}" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-magic mr-2"></i> Generate
+                </a>
+                <button type="button" onclick="document.getElementById('deleteConfirmModal').showModal()" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i> Delete
+                </button>
+            </div>
+        </div>
+
+        <div class="p-6">
+            {% if model.details %}
+            <h4 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Model Details</h4>
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-sm">
+                    <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                        {% if model.details.format %}
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 w-48">Format</th>
+                            <td class="px-4 py-3 text-neutral-700 dark:text-neutral-300">{{ model.details.format }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if model.details.family %}
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400">Family</th>
+                            <td class="px-4 py-3 text-neutral-700 dark:text-neutral-300">{{ model.details.family }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if model.details.parameter_size %}
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400">Parameter Size</th>
+                            <td class="px-4 py-3 text-neutral-700 dark:text-neutral-300">{{ model.details.parameter_size }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if model.details.quantization_level %}
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400">Quantization Level</th>
+                            <td class="px-4 py-3 text-neutral-700 dark:text-neutral-300">{{ model.details.quantization_level }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            {% if model.capabilities %}
+            <h4 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Capabilities</h4>
+            <div class="flex flex-wrap gap-2 mb-6">
+                {% for capability in model.capabilities %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">{{ capability }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if model.template %}
+            <h4 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Template</h4>
+            <pre class="text-xs text-neutral-700 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded !p-4 mb-6 overflow-auto h-[200px]"><code>{{ model.template }}</code></pre>
+            {% endif %}
+
+            {% if model.parameters %}
+            <h4 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Parameters</h4>
+            <pre class="text-xs text-neutral-700 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded !p-4 mb-6 overflow-auto h-[200px]"><code>{{ model.parameters }}</code></pre>
+            {% endif %}
+
+            {% if model.modelfile %}
+            <h4 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">Modelfile</h4>
+            <pre class="text-xs text-neutral-700 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded !p-4 mb-6 overflow-auto h-[300px]"><code>{{ model.modelfile }}</code></pre>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-{% block content %}
+{% block modals %}
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete the model <strong id="modelNameToDelete"></strong>?</p>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    This action cannot be undone.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteModelForm" action="" method="POST" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Delete
-                    </button>
-                </form>
+<dialog id="deleteConfirmModal">
+    <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-transparent shadow-xl">
+        <div class="flex items-center justify-between px-6 py-4 bg-red-600 rounded-t-lg">
+            <h5 class="text-sm font-semibold text-white" id="deleteConfirmModalLabel">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Confirm Deletion
+            </h5>
+            <button type="button" class="text-white hover:text-neutral-200" onclick="this.closest('dialog').close()" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-3">Are you sure you want to delete the model <strong>{{ model_name }}</strong>?</p>
+            <div class="flex items-start gap-2 px-3 py-2 rounded-md border text-xs bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300">
+                <i class="fas fa-exclamation-circle mt-0.5 shrink-0"></i>
+                <span>This action cannot be undone.</span>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/models">Models</a></li>
-                    <li class="breadcrumb-item active">{{ model_name }}</li>
-                </ol>
-            </nav>
+        <div class="flex justify-end gap-2 px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
+            <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors" onclick="this.closest('dialog').close()">Cancel</button>
+            <form action="/models/delete/{{ model_name | urlencode }}" method="POST" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>Delete
+                </button>
+            </form>
         </div>
     </div>
-
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ model_name }}</h2>
-                    <div>
-                        <a href="/chat?model={{ model_name }}" class="btn btn-primary me-2">
-                            <i class="fas fa-comments me-2"></i> Chat
-                        </a>
-                        <a href="/generate?model={{ model_name }}" class="btn btn-primary me-2">
-                            <i class="fas fa-magic me-2"></i> Generate
-                        </a>
-                        <button type="button" id="deleteModelBtn" class="btn btn-danger" data-model-name="{{ model_name }}">
-                            <i class="fas fa-trash me-2"></i> Delete
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {% if model.details %}
-                    <h4>Model Details</h4>
-                    <div class="table-responsive mb-4">
-                        <table class="table table-striped">
-                            <tbody>
-                                {% if model.details.format %}
-                                <tr>
-                                    <th scope="row" style="width: 200px">Format</th>
-                                    <td>{{ model.details.format }}</td>
-                                </tr>
-                                {% endif %}
-                                
-                                {% if model.details.family %}
-                                <tr>
-                                    <th scope="row">Family</th>
-                                    <td>{{ model.details.family }}</td>
-                                </tr>
-                                {% endif %}
-                                
-                                {% if model.details.parameter_size %}
-                                <tr>
-                                    <th scope="row">Parameter Size</th>
-                                    <td>{{ model.details.parameter_size }}</td>
-                                </tr>
-                                {% endif %}
-                                
-                                {% if model.details.quantization_level %}
-                                <tr>
-                                    <th scope="row">Quantization Level</th>
-                                    <td>{{ model.details.quantization_level }}</td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% endif %}
-
-                    {% if model.capabilities %}
-                    <h4>Capabilities</h4>
-                    <div class="mb-4">
-                        {% for capability in model.capabilities %}
-                            <span class="badge bg-primary me-2 mb-2">{{ capability }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    {% if model.template %}
-                    <h4>Template</h4>
-                    <div class="bg-light p-3 rounded mb-4 overflow-auto" style="max-height: 200px">
-                        <pre><code>{{ model.template }}</code></pre>
-                    </div>
-                    {% endif %}
-
-                    {% if model.parameters %}
-                    <h4>Parameters</h4>
-                    <div class="bg-light p-3 rounded mb-4 overflow-auto" style="max-height: 200px">
-                        <pre><code>{{ model.parameters }}</code></pre>
-                    </div>
-                    {% endif %}
-
-                    {% if model.modelfile %}
-                    <h4>Modelfile</h4>
-                    <div class="bg-light p-3 rounded overflow-auto" style="max-height: 300px">
-                        <pre><code>{{ model.modelfile }}</code></pre>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete confirmation is now done via Bootstrap modal with improved UX -->
+</dialog>
 {% endblock %}

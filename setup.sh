@@ -27,7 +27,7 @@ SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(16))')
 if [ ! -f ".env" ]; then
     echo "Creating .env file..."
     echo "SECRET_KEY=${SECRET_KEY}" > .env
-    echo "OLLAMA_API_URL=http://localhost:11434/api" >> .env
+    echo "OLLAMA_API_URL=http://127.0.0.1:11434/api" >> .env
     echo ".env file created with a random secret key"
 else
     echo ".env file already exists"

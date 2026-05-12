@@ -1,230 +1,510 @@
-{% extends "base.html" %}
-
-{% block title %}WebOllama - Chat{% endblock %}
-
-{% block extra_css %}
-<style>
+{% extends "base.html" %} {% block title %}WebOllama - Chat{% endblock %} {% block extra_css %} <style>
     .chat-container {
-        height: calc(100vh - 200px);
+        flex: 1;
+        min-height: 0;
         display: flex;
         flex-direction: column;
     }
-    .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 15px;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        background-color: #f8f9fa;
-        margin-bottom: 15px;
-    }
-    .chat-input {
-        display: flex;
-    }
+
     .chat-input textarea {
         flex: 1;
         resize: none;
-        border-radius: 0.25rem 0 0 0.25rem;
     }
-    .chat-input button {
-        border-radius: 0 0.25rem 0.25rem 0;
+
+    /* Assistant bubble — markdown content resets */
+    .msg-assistant p {
+        margin-bottom: 0.4rem;
     }
-    .message {
-        margin-bottom: 15px;
-        max-width: 85%;
-        clear: both;
-    }
-    .message-user {
-        float: right;
-        background-color: #d1ecf1;
-        border-radius: 15px 15px 0 15px;
-    }
-    .message-assistant {
-        float: left;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 15px 15px 15px 0;
-    }
-    .message-content {
-        padding: 10px 15px;
-    }
-    .message-role {
-        font-size: 0.8rem;
-        color: #6c757d;
-        margin-bottom: 5px;
-    }
-    .message p:last-child {
+
+    .msg-assistant p:last-child {
         margin-bottom: 0;
     }
+
+    .msg-assistant ul,
+    .msg-assistant ol {
+        padding-left: 1.25rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .msg-assistant li {
+        margin-bottom: 0.2rem;
+    }
+
+    .msg-assistant code {
+        background: var(--color-neutral-200);
+        padding: 0.1em 0.35em;
+        border-radius: var(--radius-sm, 4px);
+        font-size: 0.85em;
+    }
+
+    .dark .msg-assistant code {
+        background: var(--color-neutral-700);
+    }
+
+    .msg-assistant pre {
+        background: var(--color-neutral-200);
+        padding: 0.75rem;
+        padding-bottom: 1.1rem;
+        border-radius: var(--radius-lg, 0.5rem);
+        overflow-x: auto;
+        margin-bottom: 0.4rem;
+        position: relative;
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+        transition: scrollbar-color 0.2s;
+    }
+
+    .msg-assistant pre:hover {
+        scrollbar-color: var(--color-neutral-400) transparent;
+    }
+
+    .msg-assistant pre::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .msg-assistant pre::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .msg-assistant pre::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-radius: 9999px;
+    }
+
+    .msg-assistant pre:hover::-webkit-scrollbar-thumb {
+        background: var(--color-neutral-400);
+    }
+
+    .dark .msg-assistant pre {
+        background: var(--color-neutral-900);
+    }
+
+    .dark .msg-assistant pre:hover {
+        scrollbar-color: var(--color-neutral-600) transparent;
+    }
+
+    .dark .msg-assistant pre:hover::-webkit-scrollbar-thumb {
+        background: var(--color-neutral-600);
+    }
+
+    .msg-assistant pre code {
+        background: transparent;
+        padding: 0 !important;
+        font-size: inherit;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 0.4rem;
+        right: 0.4rem;
+        background: var(--color-neutral-300);
+        color: var(--color-neutral-700);
+        border: none;
+        border-radius: var(--radius-sm, 4px);
+        padding: 0.15rem 0.4rem;
+        font-size: 0.7rem;
+        line-height: 1.4;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.15s, background 0.15s;
+    }
+
+    .msg-assistant pre:hover .copy-btn {
+        opacity: 1;
+    }
+
+    .copy-btn:hover {
+        background: var(--color-neutral-400);
+    }
+
+    .dark .copy-btn {
+        background: var(--color-neutral-700);
+        color: var(--color-neutral-300);
+    }
+
+    .dark .copy-btn:hover {
+        background: var(--color-neutral-600);
+    }
+
+    .msg-assistant h1,
+    .msg-assistant h2,
+    .msg-assistant h3 {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
     .loader {
         display: inline-block;
         width: 20px;
         height: 20px;
-        border: 3px solid rgba(0, 0, 0, 0.1);
+        border: 3px solid var(--color-neutral-200);
         border-radius: 50%;
-        border-top-color: #007bff;
+        border-top-color: var(--color-neutral-700);
         animation: spin 1s ease-in-out infinite;
     }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    .dark .loader {
+        border-color: var(--color-neutral-700);
+        border-top-color: var(--color-neutral-300);
     }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
     .streaming-content {
         position: relative;
     }
+
     .cursor {
         display: inline-block;
         width: 8px;
         height: 16px;
-        background-color: #007bff;
+        background-color: var(--color-neutral-700);
         margin-left: 2px;
         vertical-align: middle;
         animation: blink 1s step-end infinite;
     }
+
+    .dark .cursor {
+        background-color: var(--color-neutral-300);
+    }
+
     @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0;
+        }
+    }
+
+    /* Let highlight.js colour the tokens; our pre provides the background */
+    .msg-assistant pre code.hljs {
+        background: transparent;
+        padding: 0 !important;
+        font-size: inherit;
+    }
+
+    /* Links inside assistant bubbles — colour inherits from bubble text */
+    .msg-assistant a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .msg-assistant a:hover {
+        text-decoration: underline;
     }
 </style>
-{% endblock %}
-
-{% block content %}
-<div class="container">
-    <div class="row mb-3">
-        <div class="col-12">
-            <h1>Chat with Ollama</h1>
-        </div>
+<link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"> {% endblock %} {% block content %} <div
+    class="w-full self-center flex flex-1 flex-col min-h-0">
+    <div class="pl-6 pt-6 mb-6 shrink-0">
+        <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">Chat with Ollama</h1>
     </div>
-
-    <div class="row">
-        <div class="col-12 col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Model Selection</h5>
-                    <div class="mb-3">
-                        <label for="model-select" class="form-label">Choose a model</label>
-                        <select class="form-select" id="model-select">
-                            <option value="" disabled selected>Select a model</option>
-                            {% for model in models %}
-                            <option value="{{ model.name }}" {% if request.args.get('model') == model.name %}selected{% endif %}>{{ model.name }}</option>
-                            {% endfor %}
-                        </select>
+    <div class="flex-1 min-w-0 flex flex-col min-h-0 border-t-1 border-neutral-300 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950">
+        <div class="flex flex-row justify-between p-5 bg-transparent">
+            <!-- Custom Model Dropdown -->
+            <div class="relative" id="model-dropdown-wrapper">
+                <!-- Hidden native select preserved for JS compatibility -->
+                <select id="model-select" class="hidden">
+                    <option value="" disabled {% if not request.args.get('model') %}selected{% endif %}>Select a model</option>
+                    {% for model in models|sort(attribute='name') %}
+                    <option value="{{ model.name }}" {% if request.args.get('model')==model.name %}selected{% endif %}>{{ model.name }}</option>
+                    {% endfor %}
+                </select>
+                <!-- Trigger button -->
+                <button type="button" id="model-trigger"
+                    class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors min-w-44">
+                    <img id="model-trigger-icon" src="" class="w-4 h-4 hidden shrink-0" alt="">
+                    <span id="model-trigger-label" class="flex-1 text-left truncate">Select a model</span>
+                    <svg id="model-trigger-chevron" class="w-3.5 h-3.5 shrink-0 text-neutral-400 transition-transform duration-150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <!-- Dropdown panel -->
+                <div id="model-dropdown-panel"
+                    class="hidden absolute top-full left-0 mt-1 min-w-56 max-h-72 overflow-y-auto rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg z-50 py-1">
+                    {% for model in models|sort(attribute='name') %}
+                    <div class="model-option flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                        data-value="{{ model.name }}">
+                        <img class="model-option-icon w-4 h-4 shrink-0 hidden" src="" alt="">
+                        <span class="flex-1 truncate">{{ model.name }}</span>
+                        <svg class="model-option-check w-3.5 h-3.5 shrink-0 {% if request.args.get('model') != model.name %}hidden{% endif %} text-neutral-700 dark:text-neutral-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/>
+                        </svg>
                     </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-secondary" id="clear-chat">
-                            <i class="fas fa-broom me-2"></i> Clear Chat
+                    {% endfor %}
+                </div>
+            </div>
+            <button
+                class="w-max inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                id="clear-chat">
+                <i class="fas fa-broom mr-2"></i> Clear Chat </button>
+        </div>
+        <div class="chat-container">
+            <div class="flex flex-col flex-1 min-h-0 p-4 overflow-y-auto overflow-x-hidden bg-transparent mask-b-from-[95%] mask-b-to-[100%]" id="chat-messages">
+                <!-- Messages will be added here -->
+            </div>
+            <!-- Chat input area -->
+            <div class="pb-5 px-5 rounded-b-2xl bg-transparent">
+                <div class="h-28 rounded-2xl max-w-6xl mx-auto justify-around bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 relative">
+                    <div class="flex chat-input">
+                        <textarea id="message-input"
+                            class="grow m-4 outline outline-0 focus:outline-0 active:border-transparent bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 min-h-16 disabled:opacity-50 disabled:cursor-not-allowed"
+                            placeholder="{% if request.args.get('model') %}Type your message here ...{% else %}Select a model to start chatting...{% endif %}" {% if not request.args.get('model')
+                            %}disabled{% endif %}></textarea>
+                    </div>
+                    <div class="flex gap-2 items-center absolute right-2 bottom-2">
+                        <button id="send-button"
+                            class="bg-neutral-200 dark:bg-white hover:bg-neutral-300 dark:hover:bg-neutral-200 transition-colors rounded-full text-neutral-700 hover:text-neutral-600 w-8 h-8 p-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                            {% if not request.args.get('model') %}disabled{% endif %}>
+                            <!-- Send icon (arrow up) -->
+                            <svg id="icon-send" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144l144 144"></path>
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M256 120v292"></path>
+                            </svg>
+                            <!-- Stop icon (filled square) -->
+                            <svg id="icon-stop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="hidden">
+                                <rect x="96" y="96" width="320" height="320" rx="16" fill="currentColor"></rect>
+                            </svg>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-12 col-md-9">
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages">
-                    <!-- Messages will be added here -->
-                </div>
-                
-                <div class="chat-input">
-                    <textarea class="form-control" id="message-input" rows="2" placeholder="Type your message here..." disabled></textarea>
-                    <button class="btn btn-primary" id="send-button" disabled>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
+</div> {% endblock %} {% block extra_js %}
+<script src="/static/js/provider-icons.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const modelSelect = document.getElementById('model-select');
         const chatMessages = document.getElementById('chat-messages');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+
+        function getTimestamp() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // highlight.js theme switcher
+        const hljsTheme = document.getElementById('hljs-theme');
+        function updateHljsTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            hljsTheme.href = isDark
+                ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css'
+                : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css';
+        }
+        updateHljsTheme();
+        new MutationObserver(updateHljsTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        function highlightCodeBlocks(containerEl) {
+            containerEl.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+            containerEl.querySelectorAll('pre').forEach(pre => {
+                if (pre.querySelector('.copy-btn')) return;
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.title = 'Copy code';
+                btn.innerHTML = '<i class="fas fa-copy"></i>&nbsp;Copy';
+                btn.addEventListener('click', () => {
+                    const code = pre.querySelector('code');
+                    navigator.clipboard.writeText(code.innerText).then(() => {
+                        btn.innerHTML = '<i class="fas fa-check"></i>&nbsp;Copied';
+                        setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>&nbsp;Copy'; }, 2000);
+                    });
+                });
+                pre.appendChild(btn);
+            });
+        }
+
+        // ── Custom model dropdown ──────────────────────────────────────────
+        // getProviderIcon() and resolveIconSrc() are provided by /static/js/provider-icons.js
+
+        const modelTrigger        = document.getElementById('model-trigger');
+        const modelTriggerIcon    = document.getElementById('model-trigger-icon');
+        const modelTriggerLabel   = document.getElementById('model-trigger-label');
+        const modelTriggerChevron = document.getElementById('model-trigger-chevron');
+        const modelDropdownPanel  = document.getElementById('model-dropdown-panel');
+        const modelOptions        = document.querySelectorAll('.model-option');
+
+        function setTriggerState(modelName) {
+            modelTriggerLabel.textContent = modelName || 'Select a model';
+            const src = modelName ? resolveIconSrc(modelName) : null;
+            if (src) {
+                modelTriggerIcon.src = src;
+                modelTriggerIcon.classList.remove('hidden');
+            } else {
+                modelTriggerIcon.classList.add('hidden');
+            }
+        }
+
+        function refreshOptionIcons() {
+            modelOptions.forEach(opt => {
+                const iconEl = opt.querySelector('.model-option-icon');
+                const src = resolveIconSrc(opt.dataset.value);
+                if (src) { iconEl.src = src; iconEl.classList.remove('hidden'); }
+                else { iconEl.classList.add('hidden'); }
+            });
+        }
+
+        function openDropdown() {
+            modelDropdownPanel.classList.remove('hidden');
+            modelTriggerChevron.style.transform = 'rotate(180deg)';
+        }
+
+        function closeDropdown() {
+            modelDropdownPanel.classList.add('hidden');
+            modelTriggerChevron.style.transform = '';
+        }
+
+        modelTrigger.addEventListener('click', () => {
+            modelDropdownPanel.classList.contains('hidden') ? openDropdown() : closeDropdown();
+        });
+
+        document.addEventListener('click', e => {
+            if (!document.getElementById('model-dropdown-wrapper').contains(e.target)) closeDropdown();
+        });
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDropdown(); });
+
+        modelOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.dataset.value;
+                modelSelect.value = val;
+                modelOptions.forEach(o => o.querySelector('.model-option-check').classList.add('hidden'));
+                opt.querySelector('.model-option-check').classList.remove('hidden');
+                setTriggerState(val);
+                closeDropdown();
+                modelSelect.dispatchEvent(new Event('change'));
+            });
+        });
+
+        // Re-resolve icons when dark mode toggles
+        new MutationObserver(() => {
+            refreshOptionIcons();
+            if (modelSelect.value) setTriggerState(modelSelect.value);
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        // Init
+        refreshOptionIcons();
+        if (modelSelect.value) setTriggerState(modelSelect.value);
+        // ── End custom dropdown ────────────────────────────────────────────
+
         const clearChatButton = document.getElementById('clear-chat');
-        
+
         let conversation = [];
         let isProcessing = false;
-        
+        let abortController = null;
+
+        const iconSend = document.getElementById('icon-send');
+        const iconStop = document.getElementById('icon-stop');
+
+        function setStopMode() {
+            iconSend.classList.add('hidden');
+            iconStop.classList.remove('hidden');
+            sendButton.classList.replace('bg-neutral-700', 'bg-red-600');
+            sendButton.classList.replace('hover:bg-neutral-600', 'hover:bg-red-500');
+        }
+
+        function setSendMode() {
+            iconStop.classList.add('hidden');
+            iconSend.classList.remove('hidden');
+            sendButton.classList.replace('bg-red-600', 'bg-neutral-700');
+            sendButton.classList.replace('hover:bg-red-500', 'hover:bg-neutral-600');
+        }
+
         // Enable input when model is selected
-        modelSelect.addEventListener('change', function() {
+        modelSelect.addEventListener('change', function () {
             const isModelSelected = !!this.value;
             messageInput.disabled = !isModelSelected;
             sendButton.disabled = !isModelSelected;
-            
+            messageInput.placeholder = isModelSelected
+                ? 'Type your message here ...'
+                : 'Select a model to start chatting...';
+
             if (isModelSelected) {
                 messageInput.focus();
             }
-            
+
             // Clear chat when changing models
             chatMessages.innerHTML = '';
             conversation = [];
         });
-        
-        // Initialize if model is preselected from URL
-        if (modelSelect.value) {
-            messageInput.disabled = false;
-            sendButton.disabled = false;
-        }
-        
-        // Send message when clicking send button
-        sendButton.addEventListener('click', sendMessage);
-        
+
+        // Initialize if model is preselected from URL — handled server-side via Jinja2
+
+        // Send message or stop generation when clicking button
+        sendButton.addEventListener('click', function () {
+            if (isProcessing) {
+                if (abortController) abortController.abort();
+            } else {
+                sendMessage();
+            }
+        });
+
         // Send message when pressing Enter (but not with Shift+Enter)
-        messageInput.addEventListener('keydown', function(e) {
+        messageInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
-        
+
         // Clear chat
-        clearChatButton.addEventListener('click', function() {
+        clearChatButton.addEventListener('click', function () {
             chatMessages.innerHTML = '';
             conversation = [];
         });
-        
+
         function sendMessage() {
             if (isProcessing) return;
-            
+
             const message = messageInput.value.trim();
             const model = modelSelect.value;
-            
+
             if (!message || !model) return;
-            
+
             // Add user message to UI
             addMessage('user', message);
-            
+
             // Clear input
             messageInput.value = '';
-            
+
             isProcessing = true;
             messageInput.disabled = true;
-            sendButton.disabled = true;
-            
+            abortController = new AbortController();
+            setStopMode();
+
             // Reference to the message element for streaming
             let assistantMessageEl = null;
             let assistantMessageContent = '';
-            
+
             // Create and add the assistant message container
             assistantMessageEl = document.createElement('div');
-            assistantMessageEl.className = 'message message-assistant';
+            const assistantTimestamp = getTimestamp();
+            assistantMessageEl.className = 'flex justify-start mb-3';
             assistantMessageEl.innerHTML = `
-                <div class="message-content">
-                    <div class="message-role">Assistant</div>
+                <div class="msg-assistant max-w-[70%] rounded-2xl px-4 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 text-sm">
                     <div class="streaming-content"><div class="cursor"></div></div>
+                    <span class="text-xs opacity-70 mt-1 block">${assistantTimestamp}</span>
                 </div>
             `;
             chatMessages.appendChild(assistantMessageEl);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
+
+            // Get streaming content container
+            const streamingContentEl = assistantMessageEl.querySelector('.streaming-content');
+
             // Use fetch to send the data and handle the stream response
-            const response = fetch('/api/chat', {
+            fetch('/api/chat', {
                 method: 'POST',
+                signal: abortController.signal,
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -236,118 +516,133 @@
                     stream: true
                 })
             })
-            .then(response => {
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                
-                function processStream() {
-                    return reader.read().then(({ done, value }) => {
-                        if (done) {
-                            return;
-                        }
-                        
-                        const chunk = decoder.decode(value, { stream: true });
-                        const lines = chunk.split('\n\n');
-                        
-                        for (let line of lines) {
-                            if (line.startsWith('data: ')) {
-                                try {
-                                    const data = JSON.parse(line.substring(6));
-                                    
-                                    if (data.error) {
-                                        // Handle error
-                                        if (assistantMessageEl && assistantMessageEl.parentNode) {
-                                            chatMessages.removeChild(assistantMessageEl);
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    function processStream() {
+                        return reader.read().then(({ done, value }) => {
+                            if (done) {
+                                return;
+                            }
+
+                            const chunk = decoder.decode(value, { stream: true });
+                            const lines = chunk.split('\n\n');
+
+                            for (let line of lines) {
+                                if (line.startsWith('data: ')) {
+                                    try {
+                                        const data = JSON.parse(line.substring(6));
+
+                                        if (data.error) {
+                                            if (assistantMessageEl && assistantMessageEl.parentNode) {
+                                                chatMessages.removeChild(assistantMessageEl);
+                                            }
+                                            addErrorMessage(data.error);
+                                            resetUI();
+                                            return;
                                         }
-                                        addErrorMessage(data.error);
-                                        resetUI();
-                                        return;
-                                    }
-                                    
-                                    if (data.delta) {
-                                        // Update the streaming content
-                                        assistantMessageContent += data.delta;
-                                        streamingContentEl.innerHTML = marked.parse(assistantMessageContent) + '<div class="cursor"></div>';
-                                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                                    }
-                                    
-                                    if (data.done) {
-                                        // Streaming is complete
-                                        
-                                        // Replace the streaming content with the final parsed markdown
-                                        assistantMessageEl.innerHTML = `
-                                            <div class="message-content">
-                                                <div class="message-role">Assistant</div>
+
+                                        if (data.delta) {
+                                            assistantMessageContent += data.delta;
+                                            streamingContentEl.innerHTML = marked.parse(assistantMessageContent) + '<div class="cursor"></div>';
+                                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                                        }
+
+                                        if (data.done) {
+                                            assistantMessageEl.innerHTML = `
+                                            <div class="msg-assistant max-w-[70%] rounded-2xl px-4 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 text-sm">
                                                 ${marked.parse(assistantMessageContent)}
+                                                <span class="text-xs opacity-70 mt-1 block">${assistantTimestamp}</span>
                                             </div>
                                         `;
-                                        
-                                        // Update conversation
-                                        conversation = data.conversation;
-                                        
-                                        // Reset UI
-                                        resetUI();
-                                        return;
+                                            highlightCodeBlocks(assistantMessageEl);
+                                            linkifyUrls(assistantMessageEl);
+
+                                            conversation = data.conversation;
+                                            resetUI();
+                                            return;
+                                        }
+                                    } catch (e) {
+                                        // Invalid JSON, ignore this line
                                     }
-                                } catch (e) {
-                                    // Invalid JSON, ignore this line
                                 }
                             }
+
+                            return processStream();
+                        });
+                    }
+
+                    return processStream();
+                })
+                .catch(error => {
+                    if (error.name === 'AbortError') {
+                        // User stopped generation — keep whatever was streamed so far
+                        if (assistantMessageEl) {
+                            assistantMessageEl.innerHTML = `
+                            <div class="msg-assistant max-w-[70%] rounded-2xl px-4 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 text-sm">
+                                ${assistantMessageContent ? marked.parse(assistantMessageContent) : '<em class="opacity-50">Stopped.</em>'}
+                                <span class="text-xs opacity-70 mt-1 block">${assistantTimestamp}</span>
+                            </div>
+                        `;
+                            highlightCodeBlocks(assistantMessageEl);
+                            linkifyUrls(assistantMessageEl);
                         }
-                        
-                        return processStream();
-                    });
-                }
-                
-                return processStream();
-            })
-            .catch(error => {
-                if (assistantMessageEl && assistantMessageEl.parentNode) {
-                    chatMessages.removeChild(assistantMessageEl);
-                }
-                addErrorMessage('Error with streaming response: ' + error.message);
-                resetUI();
-            });
-            
-            // Get streaming content container
-            const streamingContentEl = assistantMessageEl.querySelector('.streaming-content');
-            
+                    } else {
+                        if (assistantMessageEl && assistantMessageEl.parentNode) {
+                            chatMessages.removeChild(assistantMessageEl);
+                        }
+                        addErrorMessage('Error with streaming response: ' + error.message);
+                    }
+                    resetUI();
+                });
+
             function resetUI() {
                 isProcessing = false;
+                abortController = null;
                 messageInput.disabled = false;
-                sendButton.disabled = false;
+                setSendMode();
                 messageInput.focus();
             }
         }
-        
+
         function addMessage(role, content) {
-            const messageEl = document.createElement('div');
-            messageEl.className = `message message-${role}`;
-            
-            // Parse markdown in assistant messages
-            if (role === 'assistant') {
-                content = marked.parse(content);
+            const wrapper = document.createElement('div');
+
+            const ts = getTimestamp();
+            if (role === 'user') {
+                wrapper.className = 'flex justify-end mb-3';
+                wrapper.innerHTML = `
+                    <div class="max-w-[70%] rounded-2xl px-4 py-2 bg-neutral-800 dark:bg-neutral-200 text-neutral-50 dark:text-neutral-900 text-sm">
+                        <p class="whitespace-pre-wrap break-words">${escapeHtml(content)}</p>
+                        <span class="text-xs opacity-70 mt-1 block">${ts}</span>
+                    </div>
+                `;
+                linkifyUrls(wrapper);
+            } else {
+                wrapper.className = 'flex justify-start mb-3';
+                wrapper.innerHTML = `
+                    <div class="msg-assistant max-w-[70%] rounded-2xl px-4 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 text-sm">
+                        ${marked.parse(content)}
+                        <span class="text-xs opacity-70 mt-1 block">${ts}</span>
+                    </div>
+                `;
+                highlightCodeBlocks(wrapper);
+                linkifyUrls(wrapper);
             }
-            
-            messageEl.innerHTML = `
-                <div class="message-content">
-                    <div class="message-role">${role === 'user' ? 'You' : 'Assistant'}</div>
-                    ${role === 'assistant' ? content : `<p>${escapeHtml(content)}</p>`}
-                </div>
-            `;
-            
-            chatMessages.appendChild(messageEl);
+
+            chatMessages.appendChild(wrapper);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
+
         function addErrorMessage(error) {
             const messageEl = document.createElement('div');
-            messageEl.className = 'alert alert-danger mt-3';
-            messageEl.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> ${error}`;
+            messageEl.className = 'flex items-start gap-2 px-4 py-3 rounded-md border text-sm bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 mt-3';
+            messageEl.innerHTML = `<i class="fas fa-exclamation-circle mt-0.5 shrink-0"></i><span>${error}</span>`;
             chatMessages.appendChild(messageEl);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
+
         function escapeHtml(unsafe) {
             return unsafe
                 .replace(/&/g, "&amp;")
@@ -357,5 +652,4 @@
                 .replace(/'/g, "&#039;");
         }
     });
-</script>
-{% endblock %}
+</script> {% endblock %}

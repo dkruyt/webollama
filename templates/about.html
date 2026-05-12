@@ -1,111 +1,94 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}WebOllama - About{% endblock %} {% block content %}
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">About WebOllama</h1>
+  </div>
+  <div class="text-center mb-6">
+    <img src="https://ollama.com/public/ollama.png" alt="Ollama" height="80" class="mb-3 inline-block dark:invert" />
+  </div>
 
-{% block title %}WebOllama - About{% endblock %}
+  <p class="text-base text-center text-neutral-500 dark:text-neutral-400 mb-8">A web interface for Ollama providing easy management and interaction with local AI models</p>
 
-{% block content %}
-<div class="container">
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <h1 class="mb-4 text-center">About WebOllama</h1>
-                    
-                    <div class="text-center mb-4">
-                        <img src="https://ollama.com/public/ollama.png" alt="Ollama" height="80" class="mb-3">
-                    </div>
-                    
-                    <p class="lead text-center mb-4">
-                        A web interface for Ollama providing easy management and interaction with local AI models
-                    </p>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-10 offset-md-1">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-3">Created By</h3>
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="fas fa-user-circle fa-3x text-primary"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="h5 mb-1">Dennis Kruyt</h4>
-                                            <p class="mb-2">Developer & Creator</p>
-                                            <div class="small">
-                                                <a href="https://github.com/dkruyt" target="_blank" class="text-decoration-none me-3">
-                                                    <i class="fab fa-github me-1"></i> GitHub
-                                                </a>
-                                                <a href="https://linkedin.com/in/denniskruyt" target="_blank" class="text-decoration-none">
-                                                    <i class="fab fa-linkedin me-1"></i> LinkedIn
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">About the Project</h3>
-                        <p>
-                            WebOllama is a web interface for <a href="https://ollama.com" target="_blank">Ollama</a>, designed to make it easy
-                            to manage and interact with local AI models without complicated command-line operations.
-                        </p>
-                        <p>
-                            This project aims to bring the power of large language models to everyone by providing a
-                            user-friendly interface that simplifies model management, customization, and interaction.
-                        </p>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">Features</h3>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success me-2"></i> Easy model management</li>
-                                    <li><i class="fas fa-check text-success me-2"></i> Intuitive chat interface</li>
-                                    <li><i class="fas fa-check text-success me-2"></i> Model customization</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success me-2"></i> Direct text generation</li>
-                                    <li><i class="fas fa-check text-success me-2"></i> Running model monitoring</li>
-                                    <li><i class="fas fa-check text-success me-2"></i> Version tracking and updates</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">Technologies</h3>
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="badge bg-primary">Python</span>
-                            <span class="badge bg-primary">Flask</span>
-                            <span class="badge bg-primary">Bootstrap</span>
-                            <span class="badge bg-primary">JavaScript</span>
-                            <span class="badge bg-primary">Ollama API</span>
-                            <span class="badge bg-primary">Docker</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">Acknowledgements</h3>
-                        <p>
-                            Special thanks to the <a href="https://ollama.com" target="_blank">Ollama</a> team for creating an incredible tool
-                            that makes local AI models accessible to everyone. WebOllama builds upon their work to provide
-                            a user-friendly interface.
-                        </p>
-                    </div>
-                    
-                    <div class="text-center mt-5">
-                        <p class="text-muted small">
-                            WebOllama is an open-source project. All rights to their respective owners.
-                        </p>
-                    </div>
-                </div>
-            </div>
+  <div class="max-w-sm mx-auto rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-4 mb-6">
+    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Created By</h3>
+    <div class="flex items-center">
+      <div class="mr-4">
+        <i class="fas fa-user-circle fa-3x text-neutral-400 dark:text-neutral-600"></i>
+      </div>
+      <div>
+        <h4 class="text-sm font-semibold text-neutral-900 dark:text-white mb-1">Dennis Kruyt</h4>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-2">Developer &amp; Creator</p>
+        <div class="text-xs flex gap-4">
+          <a href="https://github.com/dkruyt" target="_blank" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"> <i class="fab fa-github mr-1"></i> GitHub </a>
+          <a href="https://linkedin.com/in/denniskruyt" target="_blank" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"> <i class="fab fa-linkedin mr-1"></i> LinkedIn </a>
         </div>
+      </div>
     </div>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">About the Project</h3>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+      WebOllama is a web interface for <a href="https://ollama.com" target="_blank" class="text-neutral-900 dark:text-white underline">Ollama</a>, designed to make it easy to manage and interact with local AI models without complicated command-line operations.
+    </p>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400">This project aims to bring the power of large language models to everyone by providing a user-friendly interface that simplifies model management, customization, and interaction.</p>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Features</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+      <ul class="space-y-1">
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Easy model
+          management
+        </li>
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Intuitive
+          chat interface
+        </li>
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Model
+          customization
+        </li>
+      </ul>
+      <ul class="space-y-1">
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Direct text
+          generation
+        </li>
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Running model
+          monitoring
+        </li>
+        <li class="text-sm text-neutral-600 dark:text-neutral-400 inline-flex items-start">
+          <svg class="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Version
+          tracking and updates
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Technologies</h3>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">Python</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">Flask</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">Tailwind CSS</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">JavaScript</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">Ollama API</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900">Docker</span>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Acknowledgements</h3>
+    <p class="text-sm text-neutral-600 dark:text-neutral-400">
+      Special thanks to the <a href="https://ollama.com" target="_blank" class="text-neutral-900 dark:text-white underline">Ollama</a> team for creating an incredible tool that makes local AI models accessible to everyone. WebOllama builds upon their work to provide a user-friendly interface.
+    </p>
+  </div>
+
+  <div class="text-center mt-8">
+    <p class="text-xs text-neutral-400 dark:text-neutral-600">WebOllama is an open-source project. All rights to their respective owners.</p>
+  </div>
 </div>
 {% endblock %}

@@ -3,46 +3,305 @@
 {% block title %}WebOllama - Pull Model{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1>Pull Model</h1>
-        </div>
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl text-neutral-900 tracking-tight dark:text-neutral-200 [overflow-wrap:anywhere] break-all font-semibold">Pull Model</h1>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">Download new models from the Ollama and Hugging Face libraries</p>
     </div>
 
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-body">
-                    <form method="POST" action="/pull">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <div class="mb-3">
-                            <label for="model_name" class="form-label">Model Name</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="model_name" 
-                                name="model_name" 
-                                placeholder="e.g., llama3.2, llama2:13b, mistral:latest"
-                                required
-                            >
-                            <div class="form-text">
-                                Enter the name of the model you want to pull from the Ollama library.
-                            </div>
-                        </div>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i> Pull operations may take some time depending on the model size and your internet connection.
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <a href="/models" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-download me-2"></i> Pull Model
-                            </button>
-                        </div>
-                    </form>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+        <!-- Ollama Library Card -->
+        <a href="https://ollama.com/search" target="_blank" class="card block font-normal group relative my-2 ring-2 ring-transparent rounded-2xl bg-transparent border border-neutral-950/10 dark:border-white/15 overflow-hidden w-full cursor-pointer hover:border-neutral-700 dark:hover:border-neutral-400 no-underline" tabindex="0">
+        <div class="px-6 py-5 relative" data-component-part="card-content-container">
+            <div class="absolute text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-400 top-5 right-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right size-4">
+                <path d="M7 7h10v10"></path>
+                <path d="M7 17 17 7"></path>
+                </svg>
             </div>
+            <div class="size-6 fill-neutral-800 dark:fill-neutral-100 text-neutral-800 dark:text-neutral-100 group-hover:text-neutral-700 dark:group-hover:text-neutral-400 [&>svg]:size-6" data-component-part="card-icon">
+                <img src="https://raw.githubusercontent.com/ollama/ollama/refs/heads/main/docs/ollama-logo.svg" alt="Ollama Logo" class="w-6 h-6 dark:invert"/>
+            </div>
+            <div class="w-full">
+                <h2 class="not-prose font-semibold text-base text-neutral-800 dark:text-white mt-4" contenteditable="false" data-component-part="card-title">Ollama Library</h2>
+                <div class="prose mt-1 font-normal text-base leading-6 text-neutral-600 dark:text-neutral-400" data-component-part="card-content"><span data-as="p">Download new models from the Ollama library.</span></div>
+            </div>
+        </div>
+        </a>
+
+        <!-- Hugging Face Library Card -->
+        <a href="https://huggingface.co/models?apps=ollama&sort=trending" target="_blank" class="card block font-normal group relative my-2 ring-2 ring-transparent rounded-2xl bg-transparent border border-neutral-950/10 dark:border-white/15 overflow-hidden w-full cursor-pointer hover:border-neutral-700 dark:hover:border-neutral-400 no-underline" tabindex="0">
+        <div class="px-6 py-5 relative" data-component-part="card-content-container">
+            <div class="absolute text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-400 top-5 right-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right size-4">
+                <path d="M7 7h10v10"></path>
+                <path d="M7 17 17 7"></path>
+                </svg>
+            </div>
+            <div class="size-6 fill-neutral-800 dark:fill-neutral-100 text-neutral-800 dark:text-neutral-100 group-hover:text-neutral-700 dark:group-hover:text-neutral-400 [&>svg]:size-6" data-component-part="card-icon">
+                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face Logo" class="w-6 h-6"/>
+            </div>
+            <div class="w-full">
+                <h2 class="not-prose font-semibold text-base text-neutral-800 dark:text-white mt-4" contenteditable="false" data-component-part="card-title">Hugging Face Library</h2>
+                <div class="prose mt-1 font-normal text-base leading-6 text-neutral-600 dark:text-neutral-400" data-component-part="card-content"><span data-as="p">Download new models from the Hugging Face library.</span></div>
+            </div>
+        </div>
+        </a>
+    </div>
+
+    <div class="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+        <div class="p-6">
+            <form id="pull-form" method="POST" action="/pull">
+                
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="mb-6">
+                    <label for="model_name" class="not-prose font-semibold text-base text-neutral-800 dark:text-white">Model Name</label>
+                    <div class="callout my-4 px-5 py-4 overflow-hidden rounded-2xl flex gap-3 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-600/20 my-4">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="size-4 text-blue-800 dark:text-blue-300 mt-1" aria-label="Note"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 1.3C10.14 1.3 12.7 3.86 12.7 7C12.7 10.14 10.14 12.7 7 12.7C5.48908 12.6974 4.0408 12.096 2.97241 11.0276C1.90403 9.9592 1.30264 8.51092 1.3 7C1.3 3.86 3.86 1.3 7 1.3ZM7 0C3.14 0 0 3.14 0 7C0 10.86 3.14 14 7 14C10.86 14 14 10.86 14 7C14 3.14 10.86 0 7 0ZM8 3H6V8H8V3ZM8 9H6V11H8V9Z"></path></svg>
+                        <span class="text-sm prose dark:prose-invert min-w-0 w-full [&_kbd]:bg-background-light dark:[&_kbd]:bg-background-dark [&_code]:!text-current [&_kbd]:!text-current [&_a]:!text-current [&_a]:border-current [&_strong]:!text-current text-blue-800 dark:text-blue-300">Pull operations may take some time depending on the model size and your internet connection.</span>
+                    </div>
+                    <p class="text-base font-normal text-neutral-500 dark:text-neutral-400">
+                        Enter the name of the model you want to pull from the Ollama library.
+                    </p>
+                    <input
+                        type="text"
+                        class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white mt-3"
+                        id="model_name"
+                        name="model_name"
+                        placeholder="e.g., llama3.2, llama2:13b, mistral:latest"
+                        required
+                    >
+                </div>
+
+                <!-- Progress section (hidden until a pull starts) -->
+                <div id="pull-progress" class="hidden mb-4">
+                    <div class="flex justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
+                        <span id="pull-status" class="truncate pr-2">Starting…</span>
+                        <span id="pull-percent" class="shrink-0 font-medium"></span>
+                    </div>
+                    <div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+                        <div id="pull-bar" class="bg-black dark:bg-white h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="pull-layer-info" class="mt-1 text-xs text-neutral-500 dark:text-neutral-500"></p>
+                </div>
+
+                <!-- Result banner -->
+                <div id="pull-result" class="hidden items-start gap-2 px-4 py-3 rounded-md border text-sm mb-4"></div>
+
+                <div class="flex justify-between">
+                    <button id="cancel-btn" type="button"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                        onclick="handleCancel()">
+                        <i id="cancel-icon" class="fas fa-arrow-left mr-2"></i>
+                        <span id="cancel-label">Cancel</span>
+                    </button>
+                    <button id="pull-submit" type="submit"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-download mr-2"></i> Pull Model
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    const LS_KEY = 'webollama_pull_job';
+    let pollTimer = null;
+    let activeJobId = null;
+    let activeModel = null;
+
+    const formEl      = document.getElementById('pull-form');
+    const progressEl  = document.getElementById('pull-progress');
+    const statusEl    = document.getElementById('pull-status');
+    const percentEl   = document.getElementById('pull-percent');
+    const barEl       = document.getElementById('pull-bar');
+    const layerEl     = document.getElementById('pull-layer-info');
+    const resultEl    = document.getElementById('pull-result');
+    const submitBtn   = document.getElementById('pull-submit');
+    const cancelBtn   = document.getElementById('cancel-btn');
+    const cancelIcon  = document.getElementById('cancel-icon');
+    const cancelLabel = document.getElementById('cancel-label');
+    const modelInput  = document.getElementById('model_name');
+    const csrfToken   = document.querySelector('input[name="csrf_token"]').value;
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function setDownloading(model) {
+        modelInput.value = model;
+        modelInput.disabled = true;
+        progressEl.classList.remove('hidden');
+        submitBtn.disabled = true;
+        cancelIcon.className = 'fas fa-stop mr-2';
+        cancelLabel.textContent = 'Stop';
+    }
+
+    function setIdle() {
+        modelInput.disabled = false;
+        progressEl.classList.add('hidden');
+        submitBtn.disabled = false;
+        cancelIcon.className = 'fas fa-arrow-left mr-2';
+        cancelLabel.textContent = 'Cancel';
+        barEl.style.width = '0%';
+        percentEl.textContent = '';
+        layerEl.textContent = '';
+        stopPolling();
+        localStorage.removeItem(LS_KEY);
+        activeJobId = null;
+        activeModel = null;
+    }
+
+    function showResult(success, message) {
+        resultEl.classList.remove('hidden');
+        resultEl.classList.add('flex');
+        if (success) {
+            resultEl.className = 'flex items-start gap-2 px-4 py-3 rounded-md border text-sm mb-4 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300';
+            resultEl.innerHTML = '<i class="fas fa-check-circle mt-0.5 shrink-0"></i><span>' + message + '</span>';
+        } else {
+            resultEl.className = 'flex items-start gap-2 px-4 py-3 rounded-md border text-sm mb-4 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300';
+            resultEl.innerHTML = '<i class="fas fa-exclamation-circle mt-0.5 shrink-0"></i><span>' + message + '</span>';
+        }
+    }
+
+    function updateProgress(data) {
+        if (data.status) statusEl.textContent = data.status;
+
+        const totalSum     = Object.values(data.totals || {}).reduce((a, b) => a + b, 0);
+        const completedSum = Object.values(data.completed || {}).reduce((a, b) => a + b, 0);
+        if (totalSum > 0) {
+            const pct = Math.min(100, Math.round(completedSum / totalSum * 100));
+            barEl.style.width = pct + '%';
+            percentEl.textContent = pct + '%';
+        }
+        const layers = Object.keys(data.totals || {}).length;
+        if (layers > 0) {
+            layerEl.textContent = layers + (layers === 1 ? ' layer' : ' layers') + ' downloading…';
+        }
+    }
+
+    // ── Polling ───────────────────────────────────────────────────────────────
+
+    function stopPolling() {
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    }
+
+    async function poll() {
+        if (!activeJobId) return;
+        try {
+            const res = await fetch('/pull/progress/' + activeJobId);
+            if (res.status === 404) {
+                showResult(false, 'Job not found — the server may have restarted.');
+                setIdle();
+                return;
+            }
+            const data = await res.json();
+
+            if (data.cancelled) {
+                setIdle();
+                return;
+            }
+            if (data.error) {
+                showResult(false, 'Error: ' + data.error);
+                setIdle();
+                return;
+            }
+
+            updateProgress(data);
+
+            if (data.success) {
+                stopPolling();
+                barEl.style.width = '100%';
+                percentEl.textContent = '100%';
+                layerEl.textContent = '';
+                showResult(true, 'Model "' + data.model + '" pulled successfully. Redirecting…');
+                localStorage.removeItem(LS_KEY);
+                cancelIcon.className = 'fas fa-arrow-left mr-2';
+                cancelLabel.textContent = 'Cancel';
+                activeJobId = null;
+                setTimeout(() => { window.location = '/models'; }, 1500);
+            }
+        } catch (e) {
+            // network hiccup — keep polling
+        }
+    }
+
+    function startPolling(jobId, model) {
+        activeJobId = jobId;
+        activeModel = model;
+        setDownloading(model);
+        stopPolling();
+        poll();
+        pollTimer = setInterval(poll, 800);
+    }
+
+    // ── Cancel / Stop ─────────────────────────────────────────────────────────
+
+    window.handleCancel = async function () {
+        if (!activeJobId) {
+            window.location = '/models';
+            return;
+        }
+        // Stop in-progress download
+        try {
+            await fetch('/pull/cancel/' + activeJobId, { method: 'POST' });
+        } catch (_) {}
+        showResult(false, 'Download stopped.');
+        setIdle();
+    };
+
+    // ── Form submit ───────────────────────────────────────────────────────────
+
+    formEl.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const model = modelInput.value.trim();
+        if (!model) return;
+
+        resultEl.classList.add('hidden');
+        resultEl.classList.remove('flex');
+
+        try {
+            const fd = new FormData(formEl);
+            const res = await fetch('/pull/start', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                body: fd
+            });
+            if (!res.ok) throw new Error('Server error ' + res.status);
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            localStorage.setItem(LS_KEY, JSON.stringify({ jobId: data.job_id, model: data.model }));
+            startPolling(data.job_id, data.model);
+        } catch (err) {
+            showResult(false, 'Failed to start pull: ' + err.message);
+        }
+    });
+
+    // ── Resume on page load ───────────────────────────────────────────────────
+
+    (async function resumeIfActive() {
+        const saved = localStorage.getItem(LS_KEY);
+        if (!saved) return;
+        let parsed;
+        try { parsed = JSON.parse(saved); } catch { localStorage.removeItem(LS_KEY); return; }
+
+        const { jobId, model } = parsed;
+        if (!jobId) return;
+
+        // Check if the job is still alive
+        try {
+            const res = await fetch('/pull/progress/' + jobId);
+            if (!res.ok) { localStorage.removeItem(LS_KEY); return; }
+            const data = await res.json();
+            if (data.done || data.cancelled) { localStorage.removeItem(LS_KEY); return; }
+            // Still in progress — reconnect
+            startPolling(jobId, model);
+        } catch (_) {
+            localStorage.removeItem(LS_KEY);
+        }
+    })();
+})();
+</script>
 {% endblock %}

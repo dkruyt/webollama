@@ -1,214 +1,194 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}WebOllama - Models{% endblock %} {% block extra_css %} <style>
+    #deleteConfirmModal { border: none; padding: 0; width: 100%; max-width: 500px; color: inherit; }
 
-{% block title %}WebOllama - Models{% endblock %}
+    @media (max-width: 639px) {
+        .models-table-wrapper {
+            border: none !important;
+            border-radius: 0;
+            overflow: visible;
+            background: transparent;
+        }
 
-{% block extra_css %}
-<style>
-    #deleteConfirmModal {
-        z-index: 2000 !important;
-        position: absolute !important;
+        #models-table thead {
+            display: none;
+        }
+
+        #models-table tbody tr {
+            display: block;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--color-neutral-200);
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .dark #models-table tbody tr {
+            border-color: var(--color-neutral-800);
+            background-color: var(--color-neutral-950);
+        }
+
+        #models-table tbody tr+tr {
+            border-top-width: 1px;
+        }
+
+        #models-table tbody td {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border-bottom: 1px solid var(--color-neutral-100);
+        }
+
+        .dark #models-table tbody td {
+            border-bottom-color: var(--color-neutral-800);
+        }
+
+        #models-table tbody td:last-child {
+            border-bottom: none;
+        }
+
+        #models-table tbody td::before {
+            content: attr(data-label);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-500);
+            flex-shrink: 0;
+        }
     }
-    .modal-backdrop {
-        display: none !important;
-    }
-    
-    /* Ensure the modal content is visible */
-    .modal-content {
-        box-shadow: 0 5px 15px rgba(0,0,0,.5);
-        background-color: #fff;
-    }
-</style>
-{% endblock %}
+</style> {% endblock %} {% block content %}
+<div class="p-6 sm:p-8 w-full max-w-6xl self-center flex flex-1 flex-col min-h-0 overflow-y-auto">
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-        
-        // Handle delete button clicks
-        document.querySelectorAll('.delete-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const modelName = this.getAttribute('data-model-name');
-                const modelId = this.getAttribute('data-model-id');
-                
-                // Set the model name in the modal
-                const modelNameEl = document.getElementById('modelNameToDelete');
-                if (modelNameEl) {
-                    modelNameEl.textContent = modelName;
-                }
-                
-                // Set the form action
-                const formEl = document.getElementById('deleteModelForm');
-                if (formEl) {
-                    formEl.action = '/models/delete/' + encodeURIComponent(modelName);
-                }
-                
-                // Show the modal
-                const modalEl = document.getElementById('deleteConfirmModal');
-                if (modalEl) {
-                    // Create modal with options for Bootstrap 5
-                    const deleteModal = new bootstrap.Modal(modalEl, {
-                        backdrop: false
-                    });
-                    deleteModal.show();
-                }
-            });
-        });
-    });
-</script>
-{% endblock %}
+    <div class="hidden sm:flex flex-col mb-6">
+        <div class="flex flex-row w-full justify-between items-center">
+            <h1 class="text-2xl font-semibold text-neutral-900 dark:text-white">Local Models</h1>
+            <div class="flex gap-2">
+                <a href="/create"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-plus-circle mr-2"></i> Create Model </a>
+                <a href="/pull"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-download mr-2"></i> Pull Model </a>
+            </div>
+        </div>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Models available on this server</p>
+    </div>
 
-{% block content %}
+    <div class="sm:hidden mb-6">
+        <div class="flex flex-col justify-between items-center gap-4">
+            <div class="flex flex-col w-full">
+                <h1 class="text-2xl font-semibold text-neutral-900 dark:text-white">Local Models</h1>
+                <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Models available on this server</p>
+            </div>
+            <div class="flex flex-row w-full gap-2">
+                <a href="/create"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-plus-circle mr-2"></i> Create Model </a>
+                <a href="/pull"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+                    <i class="fas fa-download mr-2"></i> Pull Model </a>
+            </div>
+        </div>
+    </div>
+
+    {% if models %} 
+    <div class="flex justify-end items-center gap-2 mb-3">
+        <span class="text-xs text-neutral-500 dark:text-neutral-400">Sort by:</span>
+        <div class="inline-flex rounded-base -space-x-px" role="group">
+            <a href="{{ url_for('models', sort='name', order='asc' if sort_by != 'name' or sort_order == 'desc' else 'desc') }}"
+                class="inline-flex items-center gap-1 text-heading bg-transparent border border-1 border-black dark:border-white rounded-l-sm hover:bg-dark hover:text-white active:border-white font-medium leading-5 text-xs px-2 py-1 {{ '!bg-black dark:!bg-white !border-black dark:!border-white !text-white dark:!text-neutral-900' if sort_by == 'name' else '' }}">
+                Name {% if sort_by == 'name' %} <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} relative {{ '-top-[2px]' if sort_order == 'asc' else 'top-[4px]' }}"></i> {% endif
+                %} </a>
+            <a href="{{ url_for('models', sort='size', order='asc' if sort_by != 'size' or sort_order == 'desc' else 'desc') }}"
+                class="inline-flex items-center gap-1 text-heading bg-transparent border border-1 border-black dark:border-white hover:bg-dark hover:text-white active:border-black dark:active:border-white font-medium leading-5 text-xs px-2 py-1 {{ '!bg-black dark:!bg-white !border-black dark:!border-white !text-white dark:!text-neutral-900' if sort_by == 'size' else '' }}">
+                Size {% if sort_by == 'size' %} <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} relative {{ '-top-[2px]' if sort_order == 'asc' else 'top-[4px]' }}"></i> {% endif
+                %} </a>
+            <a href="{{ url_for('models', sort='modified', order='asc' if sort_by != 'modified' or sort_order == 'desc' else 'desc') }}"
+                class="inline-flex items-center gap-1 text-heading bg-transparent border border-1 border-black dark:border-white rounded-r-sm hover:bg-dark hover:text-white active:border-white font-medium leading-5 text-xs px-2 py-1 {{ '!bg-black dark:!bg-white !border-black dark:!border-white !text-white dark:!text-neutral-900' if sort_by == 'modified' else '' }}">
+                Modified {% if sort_by == 'modified' %} <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} relative {{ '-top-[2px]' if sort_order == 'asc' else 'top-[4px]' }}"></i> {%
+                endif %} </a>
+        </div>
+    </div>
+    <div class="models-table-wrapper rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+        <table id="models-table" class="min-w-full table-fixed text-sm">
+            <thead>
+                <tr class="bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Name</th>
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Size</th>
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Parameter Size</th>
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Quantization</th>
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Modified</th>
+                    <th class="px-4 py-3 text-left text-xs font-normal text-neutral-900 dark:text-neutral-400">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800"> {% for model in models %} <tr
+                    class="bg-white dark:bg-neutral-950 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
+                    <td data-label="Name" class="px-4 py-3 text-neutral-900 dark:text-neutral-100">
+                        <a href="/models/{{ model.name|urlencode }}" class="block group-hover:underline hover:underline text-sm font-medium text-neutral-800 dark:text-neutral-200">{{ model.name }}</a>
+                    </td>
+                    <td data-label="Size" class="px-4 py-3 text-neutral-500 dark:text-neutral-400">{{ (model.size / (1024*1024))|round(1) }} MB</td>
+                    <td data-label="Parameter Size" class="px-4 py-3 text-neutral-500 dark:text-neutral-400">{{ model.details.parameter_size if model.details.parameter_size else 'N/A' }}</td>
+                    <td data-label="Quantization" class="px-4 py-3 text-neutral-500 dark:text-neutral-400">{{ model.details.quantization_level if model.details.quantization_level else 'N/A' }}</td>
+                    <td data-label="Modified" class="px-4 py-3 text-neutral-500 dark:text-neutral-400" title="{{ model.modified_at|replace('T', ' ')|replace('Z', '')|truncate(19, True, '') }}">{{
+                        model.modified_ago }}</td>
+                    <td data-label="Actions" class="px-4 py-3">
+                        <div class="flex gap-2">
+                            <a href="/models/{{ model.name|urlencode }}"
+                                class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                                title="View details">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                            <a href="/models/update/{{ model.name|urlencode }}"
+                                class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded border border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950 transition-colors"
+                                title="Update model">
+                                <i class="fas fa-sync-alt"></i>
+                            </a>
+                            <button type="button"
+                                class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+                                data-model-name="{{ model.name }}" title="Delete model"
+                                onclick="document.getElementById('modelNameToDelete').textContent=this.dataset.modelName; document.getElementById('deleteModelForm').action='/models/delete/'+encodeURIComponent(this.dataset.modelName); document.getElementById('deleteConfirmModal').showModal()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr> {% endfor %} </tbody>
+        </table>
+    </div> {% else %} <div class="flex items-start gap-2 px-4 py-3 rounded-md border text-sm bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 mb-4">
+        <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
+        <span>No models found. Pull a model from one of the valid Ollama libraries to get started.</span>
+    </div>
+    <a href="/pull"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors">
+        <i class="fas fa-download mr-2"></i> Pull Model </a> {% endif %}
+</div> {% endblock %}
+
+{% block modals %}
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-backdrop="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete the model <strong id="modelNameToDelete"></strong>?</p>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    This action cannot be undone.
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteModelForm" action="" method="POST" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Delete
-                    </button>
-                </form>
+<dialog id="deleteConfirmModal" class="bg-transparent">
+    <div class="rounded-2xl bg-white dark:bg-neutral-950">
+        <div class="flex items-center justify-between px-6 py-4 bg-red-600 rounded-t-2xl">
+            <h5 class="text-sm font-semibold text-white" id="deleteConfirmModalLabel">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Confirm Deletion
+            </h5>
+            <button type="button" class="text-white hover:text-neutral-200" onclick="this.closest('dialog').close()" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-3">Are you sure you want to delete the model <strong id="modelNameToDelete"></strong>?</p>
+            <div class="flex items-start gap-2 px-3 py-2 rounded-md border text-xs bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300">
+                <i class="fas fa-exclamation-circle mt-0.5 shrink-0"></i>
+                <span>This action cannot be undone.</span>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="container-fluid">
-    <div class="mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1>Local Models</h1>
-            <div>
-                <a href="/create" class="btn btn-primary me-2">
-                    <i class="fas fa-plus-circle me-2"></i> Create Model
-                </a>
-                <a href="/pull" class="btn btn-primary">
-                    <i class="fas fa-download me-2"></i> Pull Model
-                </a>
-            </div>
-        </div>
-        <p class="text-muted">Models available on this server</p>
-    </div>
-
-    {% if models %}
-    <div class="mb-3">
-        <div class="d-flex justify-content-end align-items-center">
-            <div class="me-2 text-muted small">Sort by:</div>
-            <div class="btn-group">
-                <a href="{{ url_for('models', sort='name', order='asc' if sort_by != 'name' or sort_order == 'desc' else 'desc') }}" 
-                   class="btn btn-sm {{ 'btn-primary' if sort_by == 'name' else 'btn-outline-primary' }}">
-                    Name
-                    {% if sort_by == 'name' %}
-                        <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1"></i>
-                    {% endif %}
-                </a>
-                <a href="{{ url_for('models', sort='size', order='asc' if sort_by != 'size' or sort_order == 'desc' else 'desc') }}" 
-                   class="btn btn-sm {{ 'btn-primary' if sort_by == 'size' else 'btn-outline-primary' }}">
-                    Size
-                    {% if sort_by == 'size' %}
-                        <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1"></i>
-                    {% endif %}
-                </a>
-                <a href="{{ url_for('models', sort='modified', order='asc' if sort_by != 'modified' or sort_order == 'desc' else 'desc') }}" 
-                   class="btn btn-sm {{ 'btn-primary' if sort_by == 'modified' else 'btn-outline-primary' }}">
-                    Modified
-                    {% if sort_by == 'modified' %}
-                        <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1"></i>
-                    {% endif %}
-                </a>
-            </div>
+        <div class="flex justify-end gap-2 px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
+            <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors" onclick="this.closest('dialog').close()">Cancel</button>
+            <form id="deleteModelForm" action="" method="POST" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>Delete
+                </button>
+            </form>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>
-                                Name
-                                {% if sort_by == 'name' %}
-                                    <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1 text-primary"></i>
-                                {% endif %}
-                            </th>
-                            <th>
-                                Size
-                                {% if sort_by == 'size' %}
-                                    <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1 text-primary"></i>
-                                {% endif %}
-                            </th>
-                            <th>Parameter Size</th>
-                            <th>Quantization</th>
-                            <th>
-                                Modified
-                                {% if sort_by == 'modified' %}
-                                    <i class="fas fa-sort-{{ 'down' if sort_order == 'asc' else 'up' }} ms-1 text-primary"></i>
-                                {% endif %}
-                            </th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for model in models %}
-                        <tr>
-                            <td>
-                                <a href="/models/{{ model.name|urlencode }}" class="text-decoration-none">{{ model.name }}</a>
-                            </td>
-                            <td>{{ (model.size / (1024*1024))|round(1) }} MB</td>
-                            <td>{{ model.details.parameter_size if model.details.parameter_size else 'N/A' }}</td>
-                            <td>{{ model.details.quantization_level if model.details.quantization_level else 'N/A' }}</td>
-                            <td data-bs-toggle="tooltip" title="{{ model.modified_at|replace('T', ' ')|replace('Z', '')|truncate(19, True, '') }}">
-                                {{ model.modified_ago }}</td>
-                            <td>
-                                <div class="d-flex">
-                                    <a href="/models/{{ model.name|urlencode }}" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="tooltip" title="View details">
-                                        <i class="fas fa-info-circle"></i>
-                                    </a>
-                                    <a href="/models/update/{{ model.name|urlencode }}" class="btn btn-sm btn-outline-success me-2" data-bs-toggle="tooltip" title="Update model">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-model-id="{{ loop.index }}" data-model-name="{{ model.name }}" data-bs-toggle="tooltip" title="Delete model">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% else %}
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i> No models found. Pull a model from the Ollama library to get started.
-            </div>
-            <a href="/pull" class="btn btn-primary">
-                <i class="fas fa-download me-2"></i> Pull Model
-            </a>
-        </div>
-    </div>
-    {% endif %}
-</div>
+</dialog>
 {% endblock %}
